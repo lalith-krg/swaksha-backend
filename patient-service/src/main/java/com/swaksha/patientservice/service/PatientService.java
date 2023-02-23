@@ -5,8 +5,6 @@ import com.swaksha.patientservice.entity.PatientCred;
 import com.swaksha.patientservice.repository.PatientCredRepo;
 import com.swaksha.patientservice.repository.PatientRepo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -18,8 +16,15 @@ public class PatientService {
     @Autowired
     private PatientCredRepo patientCredRepo;
 
-//    public Patient register(Patient newPatient, PatientCred newPatientCred) {
-    public Patient register(Patient newPatient) {
+//    public Patient registerMobile(Patient newPatient, PatientCred newPatientCred) {
+    public Patient registerMobile(Patient newPatient) {
+        patientRepo.save(newPatient);
+//        patientCredRepo.save(newPatientCred);
+        Patient patient = newPatient;
+        return patient;
+    }
+
+    public Patient registerGovId(Patient newPatient) {
         patientRepo.save(newPatient);
 //        patientCredRepo.save(newPatientCred);
         Patient patient = newPatient;
@@ -57,4 +62,25 @@ public class PatientService {
 
         return false;
     }
+
+    public boolean dashboard(Patient patient) {
+        return true;
+    }
+
+    public boolean viewProfile(Patient patient) {
+        return true;
+    }
+
+    public boolean updateProfile(Patient patient) {
+        return true;
+    }
+
+    public boolean deleteProfile(Patient patient) {
+        return true;
+    }
+
+    public boolean resetPassword(Patient patient) {
+        return true;
+    }
+
 }
