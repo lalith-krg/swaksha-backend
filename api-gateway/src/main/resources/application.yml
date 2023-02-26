@@ -16,10 +16,10 @@ spring:
   cloud:
     gateway:
       routes:
-        - id: patient-service
-          uri: lb://patient-service
+        - id: gateway-service
+          uri: lb://gateway-service
           predicates:
-            - Path=/patient/**
+            - Path=/gateway/**
       default-filters:
         - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
       globalcors:
