@@ -42,7 +42,7 @@ public class PatientController {
     }
 
     @GetMapping(path ="/dashboard")
-    public ResponseEntity<Patient> dashboard(Patient patient){
+    public ResponseEntity<Patient> dashboard(@RequestBody Patient patient){
 
         boolean response = patientService.dashboard(patient);
 
@@ -53,7 +53,7 @@ public class PatientController {
     }
 
     @GetMapping(path ="/viewProfile")
-    public ResponseEntity<Patient> viewProfile(Patient patient){
+    public ResponseEntity<Patient> viewProfile(@RequestBody Patient patient){
 
         boolean response = patientService.viewProfile(patient);
 
@@ -64,7 +64,7 @@ public class PatientController {
     }
 
     @PostMapping(path ="/updateProfile")
-    public ResponseEntity<Patient> updateProfile(Patient patient){
+    public ResponseEntity<Patient> updateProfile(@RequestBody Patient patient){
 
         boolean response = patientService.updateProfile(patient);
 
@@ -75,7 +75,7 @@ public class PatientController {
     }
 
     @DeleteMapping(path ="/deleteProfile")
-    public ResponseEntity<Patient> deleteProfile(Patient patient){
+    public ResponseEntity<Patient> deleteProfile(@RequestBody Patient patient){
 
         boolean response = patientService.deleteProfile(patient);
 
@@ -86,7 +86,7 @@ public class PatientController {
     }
 
     @PostMapping(path ="/resetPassword")
-    public ResponseEntity<Patient> resetPassword(Patient patient){
+    public ResponseEntity<Patient> resetPassword(@RequestBody Patient patient){
 
         boolean response = patientService.resetPassword(patient);
 
