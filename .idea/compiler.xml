@@ -12,10 +12,12 @@
         <module name="patient-service" />
         <module name="eureka" />
         <module name="gateway-service" />
+        <module name="consent-manager-service" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="api-gateway" target="17" />
+      <module name="consent-manager-service" target="17" />
       <module name="eureka" target="17" />
       <module name="gateway-service" target="17" />
       <module name="hospital-service" target="17" />
@@ -25,6 +27,7 @@
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="api-gateway" options="-parameters" />
+      <module name="consent-manager-service" options="-parameters" />
       <module name="eureka" options="-parameters" />
       <module name="gateway-service" options="-parameters" />
       <module name="hospital-service" options="-parameters" />

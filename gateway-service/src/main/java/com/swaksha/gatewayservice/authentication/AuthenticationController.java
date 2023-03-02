@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/api/v1/auth")
+@RequestMapping(value = "/gateway/auth")
 public class AuthenticationController {
     private final AuthenticationService authenticationService;
     @ModelAttribute
@@ -38,6 +38,26 @@ public class AuthenticationController {
     public String verify_otp(@RequestBody verify_otp_body verify_otp_rec)
     {
         return authenticationService.verify_otp(verify_otp_rec.otp,verify_otp_rec.mobile_number);
+    }
+
+    @PostMapping("/authWithPassword")
+    public void verifyPassword(String mobileNum){
+        //
+    }
+
+    @PostMapping("/authWithMobileOTP")
+    public void sendAuthOtp(String mobileNum){
+        //
+    }
+
+    @PostMapping("/authWithMobileOTP")
+    public void verifyAuthOtp(String mobileNum){
+        //
+    }
+
+    @PostMapping("/init")
+    public void authInit(String mobileNum){
+        //
     }
 }
 
