@@ -1,5 +1,6 @@
 package com.swaksha.gatewayservice.authentication;
 
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -50,7 +51,7 @@ public class AuthenticationController {
         //
     }
 
-    @PostMapping("/authWithMobileOTP")
+    @PostMapping("/verifyAuthWithMobileOTP")
     public void verifyAuthOtp(String mobileNum){
         //
     }
