@@ -1,5 +1,6 @@
 package com.swaksha.gatewayservice.patient;
 
+import net.minidev.json.JSONObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -9,7 +10,48 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/gateway/patient")
 public class PatientController {
 
+    // Profile controller
 
+    @PostMapping("/getSSID")
+    public void getSSID(String mobileNum){
+        //
+    }
+
+    @PostMapping("/viewProfile")
+    public void viewProfile(String mobileNum){
+        //
+    }
+
+    @PostMapping("/updateProfile")
+    public void updateProfile(String mobileNum){
+        //
+    }
+
+    // Consent Management
+    @PostMapping("/getConsent")
+    public void getConsent(String docSSID, String hiuSSID, String patientSSID){
+        // Check legitimacy
+
+        // Post a form to patient
+    }
+
+    // Patient can request their active consents
+    @PostMapping("/fetchConsents")
+    public void fetchConsents(String SSID){
+        // Check SSID
+
+        // Return array of JSONObjects
+    }
+
+    // Patient can revoke consents
+    @PostMapping("/revokeConsent")
+    public void revokeConsent(String SSID, JSONObject consentObj){
+        // Check SSID
+
+        // Place revoke consent object to consent manager
+    }
+
+    /*
     @PostMapping("/init")
     public void initConsent(String ssid){
         //
@@ -32,22 +74,5 @@ public class PatientController {
     public void notifyPatient(String ssid){
         //
     }
-
-    // Profile controller
-
-    @PostMapping("/getSSID")
-    public void getSSID(String mobileNum){
-        //
-    }
-
-    @PostMapping("/viewProfile")
-    public void viewProfile(String mobileNum){
-        //
-    }
-
-    @PostMapping("/updateProfile")
-    public void updateProfile(String mobileNum){
-        //
-    }
-
+    */
 }
