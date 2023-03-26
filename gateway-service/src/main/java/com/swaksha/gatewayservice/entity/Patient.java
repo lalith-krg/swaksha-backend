@@ -1,4 +1,4 @@
-package com.swaksha.patientservice.entity;
+package com.swaksha.gatewayservice.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Getter
 @Setter
+@Table(name = "Patient_Details")
 
 public class Patient {
 

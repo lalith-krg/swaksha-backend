@@ -3,12 +3,17 @@ package com.swaksha.consentmanagerservice.patient;
 import net.minidev.json.JSONObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @Controller
 @RequestMapping("/cm/patient/auth")
 public class PatientController {
+
+    private final PatientService patientService = new PatientService();
+
+    record PinToVerifyBody(String SSID, String encPin){}
 
     // Create patient credentials
     @PostMapping("/register")
@@ -30,8 +35,10 @@ public class PatientController {
 
     // Verify PIN
     @PostMapping("/verifyPin")
-    public void verifyPin(String SSID){
+    public void verifyPin(@RequestBody PinToVerifyBody pinToVerifyBody){
         // check pin
+        boolean validity = this.patientService.verifyPin(pinToVerifyBody.SSID, pinToVerifyBody.encPin);
+
     }
 
     /*

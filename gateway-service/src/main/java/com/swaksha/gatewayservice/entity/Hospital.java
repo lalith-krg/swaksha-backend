@@ -1,4 +1,4 @@
-package com.swaksha.patientservice.entity;
+package com.swaksha.gatewayservice.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -11,25 +11,23 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Getter
 @Setter
+@Table(name = "Hospital_Details")
 
-public class Patient {
+public class Hospital {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(unique = true, nullable = false)
     private String ssid;
 
-    @Column(unique = true, nullable = false)
-    private String first_name;
+    @Column(nullable = false)
+    private String hospital_name;
 
     @Column(nullable = false)
-    private String last_name;
+    private String phone_num1;
 
     @Column(nullable = false)
-    private String phone_number;
-
-    @Column(nullable = false)
-    private LocalDateTime dob;
+    private String phone_num2;
 
     private String email;
 
