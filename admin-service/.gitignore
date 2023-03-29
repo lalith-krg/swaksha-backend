@@ -31,5 +31,3 @@ build/
 
 ### VS Code ###
 .vscode/
-
-admin-service/src/main/resources/application.properties
