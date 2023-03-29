@@ -61,33 +61,33 @@ public class ConsentService {
     }
 
     private ConsentController.ConsentObj searchConsentObjWithConsentID(String consentID){
-        Consent consent = this.consentRepo.searchConsentByID(consentID);
+//        Consent consent = this.consentRepo.searchConsentByID(consentID);
 
-        if (consent == null)
+//        if (consent == null)
             return new ConsentController.ConsentObj(null, null, null, null,
                 null, null, null, null, null,
                 null, false);
 
-        else
-            return new ConsentController.ConsentObj(consent.getDoctorSSID(), consent.getHiuSSID(), consent.getPatientSSID(),
-                    consent.getHipSSID(), consent.getDataAccessStartTime(), consent.getDataAccessEndTime(),
-                    consent.getRequestInitiatedTime(), consent.getConsentApprovedTime(), consent.getConsentEndTime(),
-                    consent.getConsentID(), consent.isSelfConsent());
+//        else
+//            return new ConsentController.ConsentObj(consent.getDoctorSSID(), consent.getHiuSSID(), consent.getPatientSSID(),
+//                    consent.getHipSSID(), consent.getDataAccessStartTime(), consent.getDataAccessEndTime(),
+//                    consent.getRequestInitiatedTime(), consent.getConsentApprovedTime(), consent.getConsentEndTime(),
+//                    consent.getConsentID(), consent.isSelfConsent());
     }
 
     private ArrayList<ConsentController.ConsentObj> searchConsentObjWithSSID(String SSID){
-        ArrayList<Consent> consents = (ArrayList<Consent>) this.consentRepo.searchConsentBySSID(SSID);
+//        ArrayList<Consent> consents = (ArrayList<Consent>) this.consentRepo.searchConsentBySSID(SSID);
 
         ArrayList<ConsentController.ConsentObj> consentObjs = new ArrayList<ConsentController.ConsentObj>();
 
-        for(Consent consent: consents){
-            ConsentController.ConsentObj consentObj = new ConsentController.ConsentObj(consent.getDoctorSSID(),
-                    consent.getHiuSSID(), consent.getPatientSSID(), consent.getHipSSID(),
-                    consent.getDataAccessStartTime(), consent.getDataAccessEndTime(),
-                    consent.getRequestInitiatedTime(), consent.getConsentApprovedTime(), consent.getConsentEndTime(),
-                    consent.getConsentID(), consent.isSelfConsent());
-            consentObjs.add(consentObj);
-        }
+//        for(Consent consent: consents){
+//            ConsentController.ConsentObj consentObj = new ConsentController.ConsentObj(consent.getDoctorSSID(),
+//                    consent.getHiuSSID(), consent.getPatientSSID(), consent.getHipSSID(),
+//                    consent.getDataAccessStartTime(), consent.getDataAccessEndTime(),
+//                    consent.getRequestInitiatedTime(), consent.getConsentApprovedTime(), consent.getConsentEndTime(),
+//                    consent.getConsentID(), consent.isSelfConsent());
+//            consentObjs.add(consentObj);
+//        }
 
         return consentObjs;
     }

@@ -1,20 +1,25 @@
 package com.swaksha.consentmanagerservice.consents;
 
-import net.minidev.json.JSONObject;
+import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
-@Controller
+@RestController
 @RequestMapping("/cm/consents")
 public class ConsentController {
 
     private final ConsentService consentService = new ConsentService();
+
+    private RestTemplate restTemplate = new RestTemplateBuilder().build();
 
     record ConsentObj(String doctorSSID, String hiuSSID, String patientSSID, String hipSSID,
                       LocalDateTime dataAccessStartTime, LocalDateTime dataAccessEndTime,
@@ -29,93 +34,91 @@ public class ConsentController {
 
     record OnVerifyConsentBody(String response, String reqSSID, ConsentObj consentObj){}
 
+    record OnFetchConsentsBody(String SSID, ArrayList<ConsentObj> consentObjs){}
+
+    record PinToVerifyBody(String SSID, String encPin){}
+
     // the gateway service can verify the user pin to approve the consent
     @PostMapping("/approveConsent")
-    public void verifyConsentCM(@RequestBody ApproveConsentBody approveConsentBody){
+    public HttpEntity<OnApproveConsentBody> verifyConsentCM(@RequestBody ApproveConsentBody approveConsentBody){
         // Verify that the patient pin is valid
         // call /cm/patient/auth/verifyPin
+        String url = "http://localhost:8999/cm/patient/auth/verifyPin";
+        HttpEntity<PinToVerifyBody> entity = new HttpEntity<>(new PinToVerifyBody(
+                approveConsentBody.patientSSID, approveConsentBody.encPin
+        ));
+        ResponseEntity<Boolean> re = this.restTemplate.postForEntity(url, entity, Boolean.class);
+
+        // Respond to /gateway/request/onApproveConsent
+        String returnUrl = "http://localhost:8999/gateway/request/onApproveConsent";
+
+        if(!re.getBody()){
+            HttpEntity<OnApproveConsentBody> approveEntity = new HttpEntity<>(new OnApproveConsentBody(
+                    "Rejected", approveConsentBody.consentObj
+            ));
+            // this.restTemplate.postForEntity(returnUrl, approveEntity, Boolean.class);
+            // return;
+            return approveEntity;
+        }
 
         // create final consent object
         ConsentObj newConsentObj = this.consentService.approveConsent(approveConsentBody.consentObj);
 
-        // Respond to /gateway/request/onApproveConsent
+        HttpEntity<OnApproveConsentBody> approveEntity = new HttpEntity<>(new OnApproveConsentBody(
+                "Approved", newConsentObj
+        ));
+        // this.restTemplate.postForEntity(returnUrl, approveEntity, Boolean.class);
+        return approveEntity;
     }
 
     // the gateway service can verify the consent object
     @PostMapping("/verifyConsent")
-    public void verifyConsentCM(@RequestBody VerifyConsentBody verifyConsentBody){
+    public HttpEntity<OnVerifyConsentBody> verifyConsentCM(@RequestBody VerifyConsentBody verifyConsentBody){
         // Verify the consent object is legit and reqSSID is associated with the co
-        boolean validity = this.consentService.verifyConsent(verifyConsentBody.consentObj);
+//        boolean validity = this.consentService.verifyConsent(verifyConsentBody.consentObj);
 
         // Respond to /gateway/request/onVerifyConsent
+        String returnUrl = "http://localhost:8999/gateway/request/onVerifyConsent";
+
+//        if(!validity) {
+//            HttpEntity<OnVerifyConsentBody> verifyEntity = new HttpEntity<>(new OnVerifyConsentBody(
+//                    "Invalid", verifyConsentBody.reqSSID, verifyConsentBody.consentObj
+//            ));
+//            // this.restTemplate.postForEntity(returnUrl, verifyEntity, Boolean.class);
+//            // return;
+//            return verifyEntity;
+//        }
+
+        HttpEntity<OnVerifyConsentBody> verifyEntity = new HttpEntity<>(new OnVerifyConsentBody(
+                "Verified", verifyConsentBody.reqSSID, verifyConsentBody.consentObj
+        ));
+        // this.restTemplate.postForEntity(returnUrl, verifyEntity, Boolean.class);
+        return verifyEntity;
     }
 
     // the gateway can fetch consents from cm
     @PostMapping("/fetchConsents")
-    public void fetchConsentsCM(@RequestBody String patientSSID){
+    public HttpEntity<OnFetchConsentsBody> fetchConsentsCM(@RequestBody String patientSSID){
         // search for consents associated with SSID
         ArrayList<ConsentObj> consentObjs = this.consentService.fetchConsents(patientSSID);
 
         // return consentObjs
+        // String returnUrl = "http://localhost:8999/gateway/request/onFetchConsents";
+        HttpEntity<OnFetchConsentsBody> fetchEntity = new HttpEntity<>(new OnFetchConsentsBody(
+                patientSSID, consentObjs
+        ));
+        // this.restTemplate.postForEntity(returnUrl, fetchEntity, Boolean.class);
+        return fetchEntity;
     }
 
     // patient can request to revoke consents form CM
     @PostMapping("/revokeConsent")
-    public void fetchConsentsCM(@RequestBody ConsentObj consentObj){
+    public boolean revokeConsents(@RequestBody ConsentObj consentObj){
         // search and erase consent object if exists
         boolean revoked = this.consentService.revokeConsent(consentObj);
 
         // return success or failure
+        return revoked;
     }
-
-    /*
-    // HIU places consent request
-    @PostMapping("/hiu/request")
-    public void hiuConsentRequest(String SSID){
-        //
-    }
-
-    // Consent Manager's reply to consent request by hiu
-    @PostMapping("/hiu/on-request")
-    public void hiuConsentOnRequest(String SSID){
-        //
-    }
-
-    // HIU places consent request
-    @PostMapping("/hiu/confirm-request")
-    public void hiuConfirmRequest(String SSID){
-        //
-    }
-
-    // HIU requesting status on consent
-    @PostMapping("/hiu/status")
-    public void hiuConsentStatus(String SSID){
-        //
-    }
-
-    // Consent Manager's reply to consent request
-    @PostMapping("/hiu/on-status")
-    public void hiuConsentOnStatus(String SSID){
-        //
-    }
-
-    // HIP fetches consent request
-    @PostMapping("/hip/fetch")
-    public void hipFetchConsentRequest(String SSID){
-        //
-    }
-
-    // HIP consent notification
-    @PostMapping("/hip/on-notify")
-    public void hipConsentNotify(String SSID){
-        //
-    }
-
-    // HIU consent notification
-    @PostMapping("/hiu/on-notify")
-    public void hiuConsentNotify(String SSID){
-        //
-    }
-    */
 
 }

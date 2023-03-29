@@ -16,6 +16,9 @@ public class PatientAuth {
     @Column(unique = true, nullable = false)
     private String ssid;
 
+    @Column(unique = true, nullable = false)
+    private String phoneNum;
+
     @Column(nullable = false)
     private String authPin;
 }

@@ -13,12 +13,18 @@ public class PatientController {
 
     private final PatientService patientService = new PatientService();
 
+    record Account(String ssid, String phoneNum, String encPin){}
+
     record PinToVerifyBody(String SSID, String encPin){}
+
+    record UpdateDetails(String SSID, String phoneNum, String OTP, String newPin){}
 
     // Create patient credentials
     @PostMapping("/register")
-    public void registerCM(JSONObject newAcc){
+    public boolean registerCM(@RequestBody Account account){
         // Save credentials
+        boolean registered = this.patientService.register(account.ssid, account.phoneNum, account.encPin);
+        return registered;
     }
 
     // Reset PIN
@@ -29,16 +35,19 @@ public class PatientController {
 
     // Confirm new PIN
     @PostMapping("/confirmNewPin")
-    public void confirmNewPin(String SSID, String phoneNum, String OTP){
-        // Verify OTP and save new PIN
+    public void confirmNewPin(@RequestBody UpdateDetails updateDetails){
+        // Verify OTP
+
+        // Save new PIN
+        boolean updated = this.patientService.updatePin(updateDetails.SSID, updateDetails.newPin);
     }
 
     // Verify PIN
     @PostMapping("/verifyPin")
-    public void verifyPin(@RequestBody PinToVerifyBody pinToVerifyBody){
+    public boolean verifyPin(@RequestBody PinToVerifyBody pinToVerifyBody){
         // check pin
         boolean validity = this.patientService.verifyPin(pinToVerifyBody.SSID, pinToVerifyBody.encPin);
-
+        return validity;
     }
 
     /*

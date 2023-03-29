@@ -20,6 +20,10 @@ spring:
           uri: lb://gateway-service
           predicates:
             - Path=/gateway/**
+        - id: consent-manager-service
+          uri: lb://consent-manager-service
+          predicates:
+            - Path=/cm/**
       default-filters:
         - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
       globalcors:
