@@ -20,30 +20,34 @@ public class Consent {
     @Id
     private String consentID;
 
-    @Column(nullable = false)
+    @Column
     private LocalDateTime consentEndTime;
 
-    @Column(nullable = false)
+    @Column
     private boolean isApproved;
 
-    @Column(nullable = false)
+    @Column
     private boolean selfConsent;
-    @Column(nullable = false)
+    @Column
     private String doctorSSID;
-    @Column(nullable = false)
+    @Column
     private String hiuSSID;
 
-    @Column(nullable = false)
+    @Column
     private String patientSSID;
 
+    @Column
     private String hipSSID;
 
+    @Column
     private LocalDateTime dataAccessStartTime;
 
+    @Column
     private LocalDateTime dataAccessEndTime;
 
-    @Column(nullable = false)
+    @Column
     private LocalDateTime requestInitiatedTime;
 
+    @Column
     private LocalDateTime consentApprovedTime;
 }

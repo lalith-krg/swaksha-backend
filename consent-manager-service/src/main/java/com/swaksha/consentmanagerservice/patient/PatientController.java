@@ -1,17 +1,21 @@
 package com.swaksha.consentmanagerservice.patient;
 
+import lombok.RequiredArgsConstructor;
 import net.minidev.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+@RestController
+@RequiredArgsConstructor
 @RequestMapping("/cm/patient/auth")
 public class PatientController {
 
-    private final PatientService patientService = new PatientService();
+    @Autowired
+    private final PatientService patientService;
 
     record Account(String ssid, String phoneNum, String encPin){}
 

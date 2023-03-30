@@ -2,23 +2,31 @@ package com.swaksha.consentmanagerservice.consents;
 
 import com.swaksha.consentmanagerservice.entity.Consent;
 import com.swaksha.consentmanagerservice.repository.ConsentRepo;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
+@Service
+@Component
+@RequiredArgsConstructor
 public class ConsentService {
 
-    private ConsentRepo consentRepo;
+    @Autowired
+    private final ConsentRepo consentRepo;
 
+    @Autowired
     public boolean verifyConsent(ConsentController.ConsentObj consentObj) {
 
         boolean validity = true;
 
         // search consent object by consent ID
-        ConsentController.ConsentObj existingObj = searchConsentObjWithConsentID(consentObj.consentID());
+        ConsentController.ConsentObj existingObj = searchConsentObjWithConsentID(consentObj.consentID().toString());
 
         // check every field in consent object
         if (!Objects.equals(consentObj, existingObj))
@@ -27,6 +35,7 @@ public class ConsentService {
         return validity;
     }
 
+    @Autowired
     public ConsentController.ConsentObj approveConsent(ConsentController.ConsentObj consentObj) {
 
         // generate consent ID
@@ -48,16 +57,19 @@ public class ConsentService {
         return newConsentObj;
     }
 
+    @Autowired
     public ArrayList<ConsentController.ConsentObj> fetchConsents(String patientSSID) {
         // search for records with patientSSID
         // return records with patientSSID
         return searchConsentObjWithSSID(patientSSID);
     }
 
+
     private String generateConsentID(){
         return UUID.randomUUID().toString();
     }
 
+    @Autowired
     private ConsentController.ConsentObj searchConsentObjWithConsentID(String consentID){
         ArrayList<Consent> consents = (ArrayList<Consent>) this.consentRepo.findByConsentID(consentID);
 
@@ -87,9 +99,11 @@ public class ConsentService {
         return consentObjs;
     }
 
+    @Autowired
     public boolean addPendingConsent(ConsentController.ConsentObj consentObj) {
         return addNewConsentObj(consentObj);
     }
+
 
     private boolean addNewConsentObj(ConsentController.ConsentObj consentObj){
         Consent consent = this.consentRepo.save(consentOf(consentObj));
@@ -100,6 +114,7 @@ public class ConsentService {
         return true;
     }
 
+    @Autowired
     public boolean revokeConsent(ConsentController.ConsentObj consentObj) {
         Consent consent = consentOf(consentObj);
 
@@ -108,11 +123,13 @@ public class ConsentService {
         return true;
     }
 
+
     private ConsentController.ConsentObj blankConsentObj(){
         return new ConsentController.ConsentObj(null, null, null, null,
                 null, null, null, null, null,
                 null, false, false);
     }
+
 
     private ConsentController.ConsentObj cObjOf(Consent consent){
         return new ConsentController.ConsentObj(consent.getDoctorSSID(),
@@ -121,6 +138,7 @@ public class ConsentService {
                     consent.getRequestInitiatedTime(), consent.getConsentApprovedTime(), consent.getConsentEndTime(),
                     consent.getConsentID(), consent.isSelfConsent(), consent.isApproved());
     }
+
 
     private Consent consentOf(ConsentController.ConsentObj consentObj){
         return new Consent(consentObj.consentID(), consentObj.consentEndTime(), consentObj.isApproved(), consentObj.selfConsent(),

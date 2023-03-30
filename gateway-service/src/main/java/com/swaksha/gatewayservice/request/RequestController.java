@@ -66,6 +66,8 @@ public class RequestController {
         // this.restTemplate.postForEntity(url, consentEntity, Boolean.class);
 
         // call /cm/consents/addPendingConsent
+         String url = "http://localhost:8999/cm/consents/addPendingConsent";
+         this.restTemplate.postForEntity(url, consentObj, Boolean.class);
     }
 
     // HIU places request for data with prior consent
