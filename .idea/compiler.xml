@@ -8,8 +8,9 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="hospital-service" />
+        <module name="gateway-service (1)" />
+        <module name="gateway-service (2)" />
         <module name="eureka" />
-        <module name="gateway-service" />
         <module name="api-gateway" />
         <module name="patient-service" />
         <module name="admin-service" />
@@ -18,12 +19,7 @@
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="admin-service" target="17" />
-      <module name="api-gateway" target="17" />
-      <module name="consent-manager-service" target="17" />
-      <module name="eureka" target="17" />
       <module name="gateway-service" target="17" />
-      <module name="hospital-service" target="17" />
-      <module name="patient-service" target="17" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
@@ -33,6 +29,8 @@
       <module name="consent-manager-service" options="-parameters" />
       <module name="eureka" options="-parameters" />
       <module name="gateway-service" options="-parameters" />
+      <module name="gateway-service (1)" options="-parameters" />
+      <module name="gateway-service (2)" options="-parameters" />
       <module name="hospital-service" options="-parameters" />
       <module name="patient-service" options="-parameters" />
     </option>
