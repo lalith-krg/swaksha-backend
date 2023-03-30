@@ -1,5 +1,6 @@
 package com.swaksha.consentmanagerservice.consents;
 
+import com.swaksha.consentmanagerservice.entity.Consent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
@@ -64,10 +65,11 @@ public class ConsentController {
         }
 
         // create final consent object
-        ConsentObj newConsentObj = this.consentService.approveConsent(approveConsentBody.consentObj);
+        Consent newConsentObj = this.consentService.approveConsent(consentOf(approveConsentBody.consentObj));
+        ConsentObj consentObj = cObjOf(newConsentObj);
 
         HttpEntity<OnApproveConsentBody> approveEntity = new HttpEntity<>(new OnApproveConsentBody(
-                "Approved", newConsentObj
+                "Approved", consentObj
         ));
         // this.restTemplate.postForEntity(returnUrl, approveEntity, Boolean.class);
         return approveEntity;
@@ -77,7 +79,7 @@ public class ConsentController {
     @PostMapping("/verifyConsent")
     public HttpEntity<OnVerifyConsentBody> verifyConsentCM(@RequestBody VerifyConsentBody verifyConsentBody){
         // Verify the consent object is legit and reqSSID is associated with the co
-        boolean validity = this.consentService.verifyConsent(verifyConsentBody.consentObj);
+        boolean validity = this.consentService.verifyConsent(consentOf(verifyConsentBody.consentObj));
 
         // Respond to /gateway/request/onVerifyConsent
         String returnUrl = "http://localhost:8999/gateway/request/onVerifyConsent";
@@ -102,7 +104,14 @@ public class ConsentController {
     @PostMapping("/fetchConsents")
     public HttpEntity<OnFetchConsentsBody> fetchConsentsCM(@RequestBody String patientSSID){
         // search for consents associated with SSID
-        ArrayList<ConsentObj> consentObjs = this.consentService.fetchConsents(patientSSID);
+        ArrayList<Consent> consents = this.consentService.fetchConsents(patientSSID);
+
+        ArrayList<ConsentController.ConsentObj> consentObjs = new ArrayList<ConsentController.ConsentObj>();
+
+        for(Consent consent: consents){
+            ConsentController.ConsentObj consentObj = cObjOf(consent);
+            consentObjs.add(consentObj);
+        }
 
         // return consentObjs
         // String returnUrl = "http://localhost:8999/gateway/request/onFetchConsents";
@@ -117,7 +126,7 @@ public class ConsentController {
     @PostMapping("/revokeConsent")
     public boolean revokeConsents(@RequestBody ConsentObj consentObj){
         // search and erase consent object if exists
-        boolean revoked = this.consentService.revokeConsent(consentObj);
+        boolean revoked = this.consentService.revokeConsent(consentOf(consentObj));
 
         // return success or failure
         return revoked;
@@ -127,7 +136,7 @@ public class ConsentController {
     @PostMapping("/rejectConsent")
     public boolean rejectConsent(@RequestBody ConsentObj consentObj){
         // search and erase consent object if exists
-        boolean revoked = this.consentService.revokeConsent(consentObj);
+        boolean revoked = this.consentService.revokeConsent(consentOf(consentObj));
 
         // return success or failure
         return revoked;
@@ -137,7 +146,24 @@ public class ConsentController {
     @PostMapping("/addPendingConsents")
     public boolean addPendingConsents(@RequestBody ConsentObj consentObj){
         // save consentObj
-        return this.consentService.addPendingConsent(consentObj);
+        return this.consentService.addPendingConsent(consentOf(consentObj));
+    }
+
+
+    private ConsentObj cObjOf(Consent consent){
+        return new ConsentObj(consent.getDoctorSSID(),
+                consent.getHiuSSID(), consent.getPatientSSID(), consent.getHipSSID(),
+                consent.getDataAccessStartTime(), consent.getDataAccessEndTime(),
+                consent.getRequestInitiatedTime(), consent.getConsentApprovedTime(), consent.getConsentEndTime(),
+                consent.getConsentID(), consent.isSelfConsent(), consent.isApproved());
+    }
+
+
+    private Consent consentOf(ConsentObj consentObj){
+        return new Consent(consentObj.consentID(), consentObj.consentEndTime(), consentObj.isApproved(), consentObj.selfConsent(),
+                consentObj.doctorSSID(), consentObj.hiuSSID(), consentObj.patientSSID(), consentObj.hipSSID(),
+                consentObj.dataAccessStartTime(), consentObj.dataAccessEndTime(), consentObj.requestInitiatedTime(),
+                consentObj.consentApprovedTime());
     }
 
 }

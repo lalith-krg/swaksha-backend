@@ -13,12 +13,11 @@ import lombok.*;
 
 public class PatientAuth {
     @Id
-    @Column(unique = true, nullable = false)
     private String ssid;
 
-    @Column(unique = true, nullable = false)
+    @Column
     private String phoneNum;
 
-    @Column(nullable = false)
+    @Column
     private String authPin;
 }
