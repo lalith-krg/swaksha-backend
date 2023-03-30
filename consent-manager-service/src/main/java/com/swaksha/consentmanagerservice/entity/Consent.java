@@ -24,6 +24,9 @@ public class Consent {
     private LocalDateTime consentEndTime;
 
     @Column(nullable = false)
+    private boolean isApproved;
+
+    @Column(nullable = false)
     private boolean selfConsent;
     @Column(nullable = false)
     private String doctorSSID;
@@ -33,12 +36,10 @@ public class Consent {
     @Column(nullable = false)
     private String patientSSID;
 
-    @Column(nullable = false)
     private String hipSSID;
 
-    @Column(nullable = false)
     private LocalDateTime dataAccessStartTime;
-    @Column(nullable = false)
+
     private LocalDateTime dataAccessEndTime;
 
     @Column(nullable = false)
