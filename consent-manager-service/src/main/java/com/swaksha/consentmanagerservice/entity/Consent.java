@@ -43,6 +43,6 @@ public class Consent {
 
     @Column(nullable = false)
     private LocalDateTime requestInitiatedTime;
-    @Column(nullable = false)
+
     private LocalDateTime consentApprovedTime;
 }

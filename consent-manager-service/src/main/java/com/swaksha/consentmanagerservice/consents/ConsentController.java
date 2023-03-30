@@ -75,19 +75,19 @@ public class ConsentController {
     @PostMapping("/verifyConsent")
     public HttpEntity<OnVerifyConsentBody> verifyConsentCM(@RequestBody VerifyConsentBody verifyConsentBody){
         // Verify the consent object is legit and reqSSID is associated with the co
-//        boolean validity = this.consentService.verifyConsent(verifyConsentBody.consentObj);
+        boolean validity = this.consentService.verifyConsent(verifyConsentBody.consentObj);
 
         // Respond to /gateway/request/onVerifyConsent
         String returnUrl = "http://localhost:8999/gateway/request/onVerifyConsent";
 
-//        if(!validity) {
-//            HttpEntity<OnVerifyConsentBody> verifyEntity = new HttpEntity<>(new OnVerifyConsentBody(
-//                    "Invalid", verifyConsentBody.reqSSID, verifyConsentBody.consentObj
-//            ));
-//            // this.restTemplate.postForEntity(returnUrl, verifyEntity, Boolean.class);
-//            // return;
-//            return verifyEntity;
-//        }
+        if(!validity) {
+            HttpEntity<OnVerifyConsentBody> verifyEntity = new HttpEntity<>(new OnVerifyConsentBody(
+                    "Invalid", verifyConsentBody.reqSSID, verifyConsentBody.consentObj
+            ));
+            // this.restTemplate.postForEntity(returnUrl, verifyEntity, Boolean.class);
+            // return;
+            return verifyEntity;
+        }
 
         HttpEntity<OnVerifyConsentBody> verifyEntity = new HttpEntity<>(new OnVerifyConsentBody(
                 "Verified", verifyConsentBody.reqSSID, verifyConsentBody.consentObj

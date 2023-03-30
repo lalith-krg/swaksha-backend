@@ -57,9 +57,12 @@ public class RequestController {
             // respond with invalid details
         }
 
+        ConsentObj consentObj = new ConsentObj(hiuRequestBody.docSSID, hiuRequestBody.hiuSSID, hiuRequestBody.patientSSID, null,
+                null, null, LocalDateTime.now(), null, null, null, false);
+
         // call /gateway/patient/getConsent
         String url = "http://localhost:8999/gateway/patient/getConsent";
-        HttpEntity<HiuRequestBody> consentEntity = new HttpEntity<>(hiuRequestBody);
+        HttpEntity<ConsentObj> consentEntity = new HttpEntity<>(consentObj);
         this.restTemplate.postForEntity(url, consentEntity, Boolean.class);
     }
 
@@ -83,10 +86,17 @@ public class RequestController {
 
         // check if consentObj is valid
         // call /gateway/request/verifyRequest
-        // HttpResponse httpResponse = verifyConsentGateway(new VerifyConsentBody(hiuRequestWithConsentBody.docSSID, hiuRequestWithConsentBody.consentObj));
+        String url = "http://localhost:8999/cm/consents/verifyConsent";
+        VerifyConsentBody verifyConsentBody = new VerifyConsentBody(
+                hiuRequestWithConsentBody.docSSID, hiuRequestWithConsentBody.consentObj);
+        HttpEntity<VerifyConsentBody> consentEntity = new HttpEntity<>(verifyConsentBody);
+        ResponseEntity<OnVerifyConsentBody> vc_re = this.restTemplate.postForEntity(url, consentEntity,
+                OnVerifyConsentBody.class);
 
         // If verified place send request to hip
         // call /gateway/request/hip/sendRequest
+        url = "http://localhost:8999/gateway/request/hip/sendRequest";
+        ResponseEntity<String> sr_re = this.restTemplate.postForEntity(url, hiuRequestWithConsentBody.consentObj, String.class);
 
         // notify
     }
@@ -117,6 +127,11 @@ public class RequestController {
         ResponseEntity<OnApproveConsentBody> re = this.restTemplate.postForEntity(url, consentEntity,
                 OnApproveConsentBody.class);
 
+        // If verified place send request to hip
+        // call /gateway/request/hip/sendRequest
+        url = "http://localhost:8999/gateway/request/hip/sendRequest";
+        ResponseEntity<String> sr_re = this.restTemplate.postForEntity(url, Objects.requireNonNull(re.getBody()).consentObj, String.class);
+
         // notify
     }
 
@@ -126,16 +141,14 @@ public class RequestController {
         // Check if all fields are filled and valid
         String reqSSID = verifyConsentBody.reqSSID;
 
-//        return reqSSID;
+        boolean validity = this.requestService.validateSSID(reqSSID);
 
-//        boolean validity = this.requestService.validateSSID(reqSSID);
-//
-//        if (!(Objects.equals(reqSSID, verifyConsentBody.consentObj().doctorSSID) ||
-//                Objects.equals(reqSSID, verifyConsentBody.consentObj().hiuSSID) ||
-//                Objects.equals(reqSSID, verifyConsentBody.consentObj().patientSSID) ||
-//                Objects.equals(reqSSID, verifyConsentBody.consentObj().hipSSID))){
-//            validity = false;
-//        }
+        if (!(Objects.equals(reqSSID, verifyConsentBody.consentObj().doctorSSID) ||
+                Objects.equals(reqSSID, verifyConsentBody.consentObj().hiuSSID) ||
+                Objects.equals(reqSSID, verifyConsentBody.consentObj().patientSSID) ||
+                Objects.equals(reqSSID, verifyConsentBody.consentObj().hipSSID))){
+            validity = false;
+        }
 
 //        if(!validity){
 //            // fields invalid

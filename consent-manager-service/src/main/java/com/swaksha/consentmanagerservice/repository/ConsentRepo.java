@@ -16,4 +16,7 @@ public interface ConsentRepo extends JpaRepository<Consent, String> {
 //    @Query("SELECT c from Consents c WHERE c.patientSSID = :ssid")
 //    List<Consent> searchConsentBySSID(String ssid);
 //    List<Consent> searchConsentBySSID(@Param("ssid") String ssid);
+
+    List<Consent> findByConsentID(String consentID);
+    List<Consent> findByPatientSSID(String patientSSID);
 }
