@@ -24,7 +24,7 @@ public class ConsentController {
     record ConsentObj(String doctorSSID, String hiuSSID, String patientSSID, String hipSSID,
                       LocalDateTime dataAccessStartTime, LocalDateTime dataAccessEndTime,
                       LocalDateTime requestInitiatedTime, LocalDateTime consentApprovedTime,
-                      LocalDateTime consentEndTime, String consentID, boolean selfConsent){
+                      LocalDateTime consentEndTime, String consentID, boolean selfConsent, boolean isApproved){
     }
     record ApproveConsentBody(String patientSSID, String encPin, ConsentObj consentObj){}
 
@@ -119,6 +119,23 @@ public class ConsentController {
 
         // return success or failure
         return revoked;
+    }
+
+    // reject Consent
+    @PostMapping("/rejectConsent")
+    public boolean rejectConsent(@RequestBody ConsentObj consentObj){
+        // search and erase consent object if exists
+        boolean revoked = this.consentService.revokeConsent(consentObj);
+
+        // return success or failure
+        return revoked;
+    }
+
+    // add pending consents
+    @PostMapping("/addPendingConsents")
+    public boolean addPendingConsents(@RequestBody ConsentObj consentObj){
+        // save consentObj
+        return this.consentService.addPendingConsent(consentObj);
     }
 
 }

@@ -35,7 +35,7 @@ public class ConsentService {
         ConsentController.ConsentObj newConsentObj = new ConsentController.ConsentObj(
                 consentObj.doctorSSID(), consentObj.hiuSSID(), consentObj.patientSSID(), consentObj.hipSSID(),
                 consentObj.dataAccessStartTime(), consentObj.dataAccessEndTime(), consentObj.requestInitiatedTime(),
-                LocalDateTime.now(), consentObj.consentEndTime(), consentId, consentObj.selfConsent()
+                LocalDateTime.now(), consentObj.consentEndTime(), consentId, consentObj.selfConsent(), true
         );
 
         // add the new consentObj to records
@@ -87,6 +87,10 @@ public class ConsentService {
         return consentObjs;
     }
 
+    public boolean addPendingConsent(ConsentController.ConsentObj consentObj) {
+        return addNewConsentObj(consentObj);
+    }
+
     private boolean addNewConsentObj(ConsentController.ConsentObj consentObj){
         Consent consent = this.consentRepo.save(consentOf(consentObj));
 
@@ -107,7 +111,7 @@ public class ConsentService {
     private ConsentController.ConsentObj blankConsentObj(){
         return new ConsentController.ConsentObj(null, null, null, null,
                 null, null, null, null, null,
-                null, false);
+                null, false, false);
     }
 
     private ConsentController.ConsentObj cObjOf(Consent consent){
@@ -115,11 +119,11 @@ public class ConsentService {
                     consent.getHiuSSID(), consent.getPatientSSID(), consent.getHipSSID(),
                     consent.getDataAccessStartTime(), consent.getDataAccessEndTime(),
                     consent.getRequestInitiatedTime(), consent.getConsentApprovedTime(), consent.getConsentEndTime(),
-                    consent.getConsentID(), consent.isSelfConsent());
+                    consent.getConsentID(), consent.isSelfConsent(), consent.isApproved());
     }
 
     private Consent consentOf(ConsentController.ConsentObj consentObj){
-        return new Consent(consentObj.consentID(), consentObj.consentEndTime(), consentObj.selfConsent(),
+        return new Consent(consentObj.consentID(), consentObj.consentEndTime(), consentObj.isApproved(), consentObj.selfConsent(),
                 consentObj.doctorSSID(), consentObj.hiuSSID(), consentObj.patientSSID(), consentObj.hipSSID(),
                 consentObj.dataAccessStartTime(), consentObj.dataAccessEndTime(), consentObj.requestInitiatedTime(),
                 consentObj.consentApprovedTime());

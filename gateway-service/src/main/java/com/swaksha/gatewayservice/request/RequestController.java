@@ -4,15 +4,14 @@ import net.minidev.json.JSONObject;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
-import java.net.http.HttpResponse;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Objects;
 
 @RestController
@@ -25,7 +24,7 @@ public class RequestController {
     record ConsentObj(String doctorSSID, String hiuSSID, String patientSSID, String hipSSID,
                       LocalDateTime dataAccessStartTime, LocalDateTime dataAccessEndTime,
                       LocalDateTime requestInitiatedTime, LocalDateTime consentApprovedTime,
-                      LocalDateTime consentEndTime, String consentID, boolean selfConsent){}
+                      LocalDateTime consentEndTime, String consentID, boolean selfConsent, boolean isApproved){}
 
     record HiuRequestBody(String docSSID, String hiuSSID, String patientSSID){}
 
@@ -38,6 +37,8 @@ public class RequestController {
     record OnApproveConsentBody(String response, ConsentObj consentObj){}
 
     record OnVerifyConsentBody(String response, String reqSSID, ConsentObj consentObj){}
+
+    record OnFetchConsentsBody(String SSID, ArrayList<ConsentObj> consentObjs){}
 
     // HIU places request for data
     @PostMapping("/hiu/request")
@@ -57,13 +58,14 @@ public class RequestController {
             // respond with invalid details
         }
 
-        ConsentObj consentObj = new ConsentObj(hiuRequestBody.docSSID, hiuRequestBody.hiuSSID, hiuRequestBody.patientSSID, null,
-                null, null, LocalDateTime.now(), null, null, null, false);
+        ConsentObj consentObj = new ConsentObj(hiuRequestBody.docSSID, hiuRequestBody.hiuSSID, hiuRequestBody.patientSSID, null, null, null, LocalDateTime.now(), null, null, null, false, false);
 
         // call /gateway/patient/getConsent
-        String url = "http://localhost:8999/gateway/patient/getConsent";
-        HttpEntity<ConsentObj> consentEntity = new HttpEntity<>(consentObj);
-        this.restTemplate.postForEntity(url, consentEntity, Boolean.class);
+        // String url = "http://localhost:8999/gateway/patient/getConsent";
+        // HttpEntity<ConsentObj> consentEntity = new HttpEntity<>(consentObj);
+        // this.restTemplate.postForEntity(url, consentEntity, Boolean.class);
+
+        // call /cm/consents/addPendingConsent
     }
 
     // HIU places request for data with prior consent
@@ -163,6 +165,61 @@ public class RequestController {
                 OnVerifyConsentBody.class);
 
         return re.getBody().reqSSID;
+
+        // notify
+    }
+
+    // Patient can request their active consents
+    @PostMapping("/fetchConsents")
+    public ArrayList<ConsentObj> fetchConsents(@RequestBody String patientSSID){
+        // Check patientSSID
+        boolean validity = true;
+
+        if (!this.requestService.validateSSID(patientSSID))
+            validity = false;
+
+        if(!validity){
+            // respond with invalid details
+        }
+
+        String url = "http://localhost:8999/cm/consents/fetchConsents";
+        ResponseEntity<OnFetchConsentsBody> re = this.restTemplate.postForEntity(url, patientSSID, OnFetchConsentsBody.class);
+
+        return re.getBody().consentObjs;
+    }
+
+    // patient can request to revoke consents form CM
+    @PostMapping("/revokeConsent")
+    public void revokeConsent(@RequestBody VerifyConsentBody verifyConsentBody){
+        // Check patientSSID
+        boolean validity = true;
+
+        if (!this.requestService.validateSSID(verifyConsentBody.reqSSID))
+            validity = false;
+
+        if(!validity){
+            // respond with invalid details
+        }
+        String url = "http://localhost:8999/cm/consents/revokeConsent";
+        ResponseEntity<Boolean> re = this.restTemplate.postForEntity(url, verifyConsentBody.reqSSID, Boolean.class);
+
+        // notify
+    }
+
+    // reject Consent
+    @PostMapping("/rejectConsent")
+    public void rejectConsent(@RequestBody VerifyConsentBody verifyConsentBody){
+        // Check patientSSID
+        boolean validity = true;
+
+        if (!this.requestService.validateSSID(verifyConsentBody.reqSSID))
+            validity = false;
+
+        if(!validity){
+            // respond with invalid details
+        }
+        String url = "http://localhost:8999/cm/consents/rejectConsent";
+        ResponseEntity<Boolean> re = this.restTemplate.postForEntity(url, verifyConsentBody.reqSSID, Boolean.class);
 
         // notify
     }
