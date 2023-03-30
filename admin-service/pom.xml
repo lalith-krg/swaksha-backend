@@ -8,8 +8,9 @@
 		<version>3.0.3</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
+
 	<groupId>com.swaksha</groupId>
-	<artifactId>gateway-service</artifactId>
+	<artifactId>admin-service</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>admin-service</name>
 	<description>Admin Service</description>
