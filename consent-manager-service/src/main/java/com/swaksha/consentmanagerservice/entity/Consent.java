@@ -8,7 +8,7 @@ import lombok.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Entity
 @Component
@@ -23,7 +23,7 @@ public class Consent {
     private String consentID;
 
     @Column
-    private LocalDateTime consentEndTime;
+    private LocalDate consentEndDate;
 
     @Column
     private boolean isApproved;
@@ -42,14 +42,14 @@ public class Consent {
     private String hipSSID;
 
     @Column
-    private LocalDateTime dataAccessStartTime;
+    private LocalDate dataAccessStartDate;
 
     @Column
-    private LocalDateTime dataAccessEndTime;
+    private LocalDate dataAccessEndDate;
 
     @Column
-    private LocalDateTime requestInitiatedTime;
+    private LocalDate requestInitiatedDate;
 
     @Column
-    private LocalDateTime consentApprovedTime;
+    private LocalDate consentApprovedDate;
 }

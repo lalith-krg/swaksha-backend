@@ -21,29 +21,12 @@ public class PatientController {
 
     record PinToVerifyBody(String SSID, String encPin){}
 
-    record UpdateDetails(String SSID, String phoneNum, String OTP, String newPin){}
-
     // Create patient credentials
     @PostMapping("/register")
-    public boolean registerCM(@RequestBody Account account){
+    public boolean registerPatient(@RequestBody Account account){
         // Save credentials
-        boolean registered = this.patientService.register(account.ssid, account.phoneNum, account.encPin);
+        boolean registered = this.patientService.registerPatient(account.ssid, account.phoneNum, account.encPin);
         return registered;
-    }
-
-    // Reset PIN
-    @PostMapping("/resetPin")
-    public void resetPin(String SSID, String phoneNum){
-        // Send OTP to registered phoneNum
-    }
-
-    // Confirm new PIN
-    @PostMapping("/confirmNewPin")
-    public void confirmNewPin(@RequestBody UpdateDetails updateDetails){
-        // Verify OTP
-
-        // Save new PIN
-        boolean updated = this.patientService.updatePin(updateDetails.SSID, updateDetails.newPin);
     }
 
     // Verify PIN
@@ -54,29 +37,12 @@ public class PatientController {
         return validity;
     }
 
-    /*
-    @PostMapping("/init")
-    public void initConsent(String ssid){
-        //
+    // Confirm new PIN
+    @PostMapping("/updateAccount")
+    public void updateAccount(@RequestBody Account account){
+        // Save new PIN
+        boolean updated = this.patientService.updateAccount(account.ssid(), account.phoneNum(),
+                account.encPin());
     }
-
-    // Placing request for data
-    @PostMapping("/request")
-    public void requestData(String ssid){
-        //
-    }
-
-    // Confirm request with otp
-    @PostMapping("/confirm")
-    public void confirmWithOtp(String ssid){
-        //
-    }
-
-    // HIP acknowledging request
-    @PostMapping("/on-notify")
-    public void notifyPatient(String ssid){
-        //
-    }
-    */
 
 }

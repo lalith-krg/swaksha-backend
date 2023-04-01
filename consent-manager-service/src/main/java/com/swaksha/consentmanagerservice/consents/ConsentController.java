@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 @RestController
@@ -25,9 +25,9 @@ public class ConsentController {
     private RestTemplate restTemplate = new RestTemplateBuilder().build();
 
     public record ConsentObj(String doctorSSID, String hiuSSID, String patientSSID, String hipSSID,
-                      LocalDateTime dataAccessStartTime, LocalDateTime dataAccessEndTime,
-                      LocalDateTime requestInitiatedTime, LocalDateTime consentApprovedTime,
-                      LocalDateTime consentEndTime, String consentID, boolean selfConsent, boolean isApproved){
+                      LocalDate dataAccessStartDate, LocalDate dataAccessEndDate,
+                      LocalDate requestInitiatedDate, LocalDate consentApprovedDate,
+                      LocalDate consentEndDate, String consentID, boolean selfConsent, boolean isApproved){
     }
     public record ApproveConsentBody(String patientSSID, String encPin, ConsentObj consentObj){}
 
@@ -40,6 +40,8 @@ public class ConsentController {
     public record OnFetchConsentsBody(String SSID, ArrayList<ConsentObj> consentObjs){}
 
     public record PinToVerifyBody(String SSID, String encPin){}
+
+    public record PatientSSIDBody(String patientSSID){}
 
     // the gateway service can verify the user pin to approve the consent
     @PostMapping("/approveConsent")
@@ -102,21 +104,21 @@ public class ConsentController {
 
     // the gateway can fetch consents from cm
     @PostMapping("/fetchConsents")
-    public HttpEntity<OnFetchConsentsBody> fetchConsentsCM(@RequestBody String patientSSID){
+    public HttpEntity<OnFetchConsentsBody> fetchConsentsCM(@RequestBody PatientSSIDBody patientSSIDBody){
         // search for consents associated with SSID
-        ArrayList<Consent> consents = this.consentService.fetchConsents(patientSSID);
+        ArrayList<Consent> consents = this.consentService.fetchConsents(patientSSIDBody.patientSSID);
 
-        ArrayList<ConsentController.ConsentObj> consentObjs = new ArrayList<ConsentController.ConsentObj>();
+        ArrayList<ConsentObj> consentObjs = new ArrayList<>();
 
         for(Consent consent: consents){
-            ConsentController.ConsentObj consentObj = cObjOf(consent);
+            ConsentObj consentObj = cObjOf(consent);
             consentObjs.add(consentObj);
         }
 
         // return consentObjs
         // String returnUrl = "http://localhost:8999/gateway/request/onFetchConsents";
         HttpEntity<OnFetchConsentsBody> fetchEntity = new HttpEntity<>(new OnFetchConsentsBody(
-                patientSSID, consentObjs
+                patientSSIDBody.patientSSID, consentObjs
         ));
         // this.restTemplate.postForEntity(returnUrl, fetchEntity, Boolean.class);
         return fetchEntity;
@@ -143,8 +145,8 @@ public class ConsentController {
     }
 
     // add pending consents
-    @PostMapping("/addPendingConsents")
-    public boolean addPendingConsents(@RequestBody ConsentObj consentObj){
+    @PostMapping("/addPendingConsent")
+    public boolean addPendingConsent(@RequestBody ConsentObj consentObj){
         // save consentObj
         return this.consentService.addPendingConsent(consentOf(consentObj));
     }
@@ -153,17 +155,18 @@ public class ConsentController {
     private ConsentObj cObjOf(Consent consent){
         return new ConsentObj(consent.getDoctorSSID(),
                 consent.getHiuSSID(), consent.getPatientSSID(), consent.getHipSSID(),
-                consent.getDataAccessStartTime(), consent.getDataAccessEndTime(),
-                consent.getRequestInitiatedTime(), consent.getConsentApprovedTime(), consent.getConsentEndTime(),
+                consent.getDataAccessStartDate(), consent.getDataAccessEndDate(),
+                consent.getRequestInitiatedDate(), consent.getConsentApprovedDate(), consent.getConsentEndDate(),
                 consent.getConsentID(), consent.isSelfConsent(), consent.isApproved());
     }
 
 
     private Consent consentOf(ConsentObj consentObj){
-        return new Consent(consentObj.consentID(), consentObj.consentEndTime(), consentObj.isApproved(), consentObj.selfConsent(),
+        return new Consent(consentObj.consentID(), consentObj.consentEndDate(), consentObj.isApproved(),
+                consentObj.selfConsent(),
                 consentObj.doctorSSID(), consentObj.hiuSSID(), consentObj.patientSSID(), consentObj.hipSSID(),
-                consentObj.dataAccessStartTime(), consentObj.dataAccessEndTime(), consentObj.requestInitiatedTime(),
-                consentObj.consentApprovedTime());
+                consentObj.dataAccessStartDate(), consentObj.dataAccessEndDate(), consentObj.requestInitiatedDate(),
+                consentObj.consentApprovedDate());
     }
 
 }

@@ -11,16 +11,16 @@ import java.util.List;
 
 @Repository
 public interface PatientAuthRepo extends JpaRepository<PatientAuth, String> {
-//    @Query("SELECT authpin FROM Patient_Auth_Pin p where p.ssid LIKE :patientSSID")
-//    String getPatientPin(String patientSSID);
-//    String getPatientPin(@Param("patientSSID") String patientSSID);
 
-    @Modifying
-    @Query(value = "UPDATE Patient_Auth_Pin p SET p.authpin = :newpin" +
-            "WHERE p.ssid LIKE :patientSSID",
-            nativeQuery = true)
-//    int updatePin(String patientSSID, String newpin);
-    int updatePin(@Param("patientSSID") String patientSSID, @Param("newpin") String newpin);
+//    @Modifying
+//    @Query(value = "UPDATE Patient_Auth p SET" +
+//            "p.patientSSID = :phoneNum" +
+//            "p.authpin = :pin" +
+//            "WHERE p.ssid LIKE :patientSSID",
+//            nativeQuery = true)
+
+//    int updatePin(@Param("patientSSID") String patientSSID, @Param("phoneNum") String phoneNum,
+//                  @Param("pin") String pin);
 
     List<PatientAuth> findBySsid(String ssid);
 

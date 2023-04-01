@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.UUID;
@@ -27,20 +27,45 @@ public class ConsentService {
 
         // search consent object by consent ID
         Consent consent = searchConsentObjWithConsentID(consentObj.getConsentID());
-//        ArrayList<Consent> consents = (ArrayList<Consent>) this.consentRepo.findByConsentID(consentObj.getConsentID());
-//
-//        if(consents.size()<1){
-//            return false;
-//        }
-//
-//        Consent consent = consents.get(0);
-//
-//        if (consent == null)
-//            return false;
+
+        printConsent(consent);
 
         // check every field in consent object
-        if (!Objects.equals(consentObj, consent))
-            validity = false;
+        if (!(Objects.equals(consentObj.getConsentID(), consent.getConsentID())))
+            return false;
+
+        if (!(Objects.equals(consentObj.getDoctorSSID(), consent.getDoctorSSID())))
+            return false;
+
+        if (!(Objects.equals(consentObj.getHiuSSID(), consent.getHiuSSID())))
+            return false;
+
+        if (!(Objects.equals(consentObj.getPatientSSID(), consent.getPatientSSID())))
+            return false;
+
+        if (!(Objects.equals(consentObj.getHipSSID(), consent.getHipSSID())))
+            return false;
+
+        if (!Objects.equals(consentObj.getConsentApprovedDate(), consent.getConsentApprovedDate()))
+            return false;
+
+        if (!Objects.equals(consentObj.getConsentEndDate(), consent.getConsentEndDate()))
+            return false;
+
+        if (!Objects.equals(consentObj.getDataAccessStartDate(), consent.getDataAccessStartDate()))
+            return false;
+
+        if (!Objects.equals(consentObj.getDataAccessEndDate(), consent.getDataAccessEndDate()))
+            return false;
+
+        if (!Objects.equals(consentObj.isSelfConsent(), consent.isSelfConsent()))
+            return false;
+
+        if (!(consentObj.isApproved() == consent.isApproved()))
+            return false;
+
+//        if (!Objects.equals(consentObj, consent))
+//            validity = false;
 
         return validity;
     }
@@ -48,36 +73,26 @@ public class ConsentService {
     @Autowired
     public Consent approveConsent(Consent consentObj) {
 
-        // generate consent ID
-        String consentId = generateConsentID();
-//        String consentId = UUID.randomUUID().toString();
+        String consentId = consentObj.getConsentID();
 
-        consentObj.setConsentID(consentId);
+        // check if consent obj already exists
+        if (consentId == null || consentId == ""){
+            // generate consent ID
+            consentId = generateConsentID();
+            consentObj.setConsentID(consentId);
+        }
+
         consentObj.setApproved(true);
-        consentObj.setConsentApprovedTime(LocalDateTime.now());
-
-//        consentObj.setConsentEndTime(LocalDateTime.now());
-//        consentObj.setDataAccessStartTime(LocalDateTime.now());
-//        consentObj.setDataAccessEndTime(LocalDateTime.now());
-//        consentObj.setRequestInitiatedTime(LocalDateTime.now());
-//
-//        consentObj.setDoctorSSID("");
-//        consentObj.setHiuSSID("");
-//        consentObj.setPatientSSID("");
-//        consentObj.setHipSSID("");
+        consentObj.setConsentApprovedDate(LocalDate.now());
 
         // add the new consentObj to records
         boolean res = addNewConsentObj(consentObj);
-//        Consent consent = this.consentRepo.save(consentObj);
 
-//        if(consent == null){
-////            return blankConsent();
-//            new Consent(null, LocalDateTime.now(), false, false,
-//                    null, null, null, null, LocalDateTime.now(),
-//                    LocalDateTime.now(), LocalDateTime.now(), LocalDateTime.now());
-//        }
+        if(res)
+            return consentObj;
+        else
+            return blankConsent();
 
-        return consentObj;
     }
 
 //    @Autowired
@@ -86,13 +101,13 @@ public class ConsentService {
         // return records with patientSSID
 //        return searchConsentObjWithSSID(patientSSID);
         ArrayList<Consent> consents = (ArrayList<Consent>) this.consentRepo.findByPatientSSID(patientSSID);
-//        ArrayList<Consent> consents = new ArrayList<Consent>();
+        System.out.println(consents.get(0).getConsentID());
         return consents;
     }
 
 
     private String generateConsentID(){
-        return UUID.randomUUID().toString();
+        return UUID.randomUUID().toString().substring(0, 8);
     }
 
     private Consent searchConsentObjWithConsentID(String consentID){
@@ -111,26 +126,12 @@ public class ConsentService {
             return consent;
     }
 
-    private ArrayList<Consent> searchConsentObjWithSSID(String SSID){
-        ArrayList<Consent> consents = (ArrayList<Consent>) this.consentRepo.findByPatientSSID(SSID);
-
-        return consents;
-    }
-
-    @Autowired
+//    @Autowired
     public boolean addPendingConsent(Consent consentObj) {
 
         String consentId = generateConsentID();
-//        String consentId = UUID.randomUUID().toString();
 
         consentObj.setConsentID(consentId);
-
-//        Consent consent = this.consentRepo.save(consentObj);
-//
-//        if(consent == null)
-//            return false;
-//
-//        return true;
 
         return addNewConsentObj(consentObj);
     }
@@ -145,42 +146,30 @@ public class ConsentService {
         return true;
     }
 
-    @Autowired
+//    @Autowired
     public boolean revokeConsent(Consent consentObj) {
         this.consentRepo.delete(consentObj);
 
         return true;
     }
 
-//
-//    private ConsentController.ConsentObj blankConsentObj(){
-//        return new ConsentController.ConsentObj(null, null, null, null,
-//                null, null, null, null, null,
-//                null, false, false);
-//    }
 
-
-    @Autowired
+//    @Autowired
     private Consent blankConsent(){
         return new Consent(null, null, false, false,
                 null, null, null, null, null,
                 null, null, null);
     }
 
-
-//    private ConsentController.ConsentObj cObjOf(Consent consent){
-//        return new ConsentController.ConsentObj(consent.getDoctorSSID(),
-//                    consent.getHiuSSID(), consent.getPatientSSID(), consent.getHipSSID(),
-//                    consent.getDataAccessStartTime(), consent.getDataAccessEndTime(),
-//                    consent.getRequestInitiatedTime(), consent.getConsentApprovedTime(), consent.getConsentEndTime(),
-//                    consent.getConsentID(), consent.isSelfConsent(), consent.isApproved());
-//    }
-//
-//
-//    private Consent consentOf(ConsentController.ConsentObj consentObj){
-//        return new Consent(consentObj.consentID(), consentObj.consentEndTime(), consentObj.isApproved(), consentObj.selfConsent(),
-//                consentObj.doctorSSID(), consentObj.hiuSSID(), consentObj.patientSSID(), consentObj.hipSSID(),
-//                consentObj.dataAccessStartTime(), consentObj.dataAccessEndTime(), consentObj.requestInitiatedTime(),
-//                consentObj.consentApprovedTime());
-//    }
+    private void printConsent(Consent consent){
+        System.out.println("ConsentID: " + consent.getConsentID());
+        System.out.println("Approved: " + consent.isApproved() + "\t\tSelf consent: " + consent.isSelfConsent());
+        System.out.println("Doctor: " + consent.getDoctorSSID() + "\t\tHIU: " + consent.getHiuSSID());
+        System.out.println("Patient: " + consent.getPatientSSID() + "\t\tHIP: " + consent.getHipSSID());
+        System.out.print("DataStart: "); System.out.print(consent.getDataAccessStartDate());
+        System.out.print("\t\tDataEnd: "); System.out.println(consent.getDataAccessEndDate());
+        System.out.print("RequestInit: "); System.out.print(consent.getRequestInitiatedDate());
+        System.out.print("\t\tConsentApproved: "); System.out.println(consent.getConsentApprovedDate());
+        System.out.println("ConsentEnd: " + consent.getConsentEndDate());
+    }
 }

@@ -2,14 +2,15 @@ package com.swaksha.consentmanagerservice.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.stereotype.Component;
 
 @Entity
-@Data
+@Component
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-@Table(name = "Patient_Auth_Pin")
+@Table(name = "Patient_Auth")
 
 public class PatientAuth {
     @Id
