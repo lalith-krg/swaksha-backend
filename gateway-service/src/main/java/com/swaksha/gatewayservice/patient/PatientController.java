@@ -40,22 +40,6 @@ public class PatientController {
         //
     }
 
-    // Consent Management
-    @PostMapping("/getConsent")
-    public void getConsent(String docSSID, String hiuSSID, String patientSSID){
-        // Check legitimacy
-
-        // Post a form to patient
-    }
-
-    // Patient can request their active consents
-    @PostMapping("/fetchConsents")
-    public void fetchConsents(String SSID){
-        // Check SSID
-
-        // Return array of JSONObjects
-    }
-
     // Patient can revoke consents
     @PostMapping("/revokeConsent")
     public void revokeConsent(String SSID, JSONObject consentObj){
@@ -65,6 +49,14 @@ public class PatientController {
     }
 
     /*
+    // Consent Management
+    @PostMapping("/getConsent")
+    public void getConsent(String docSSID, String hiuSSID, String patientSSID){
+        // Check legitimacy
+
+        // Post a form to patient
+    }
+
     @PostMapping("/init")
     public void initConsent(String ssid){
         //

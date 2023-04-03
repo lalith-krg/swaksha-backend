@@ -5,11 +5,13 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.*;
+import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Entity
-@Data
+@Component
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -20,29 +22,34 @@ public class Consent {
     @Id
     private String consentID;
 
-    @Column(nullable = false)
-    private LocalDateTime consentEndTime;
+    @Column
+    private LocalDate consentEndDate;
 
-    @Column(nullable = false)
+    @Column
+    private boolean isApproved;
+
+    @Column
     private boolean selfConsent;
-    @Column(nullable = false)
+    @Column
     private String doctorSSID;
-    @Column(nullable = false)
+    @Column
     private String hiuSSID;
 
-    @Column(nullable = false)
+    @Column
     private String patientSSID;
 
-    @Column(nullable = false)
+    @Column
     private String hipSSID;
 
-    @Column(nullable = false)
-    private LocalDateTime dataAccessStartTime;
-    @Column(nullable = false)
-    private LocalDateTime dataAccessEndTime;
+    @Column
+    private LocalDate dataAccessStartDate;
 
-    @Column(nullable = false)
-    private LocalDateTime requestInitiatedTime;
-    @Column(nullable = false)
-    private LocalDateTime consentApprovedTime;
+    @Column
+    private LocalDate dataAccessEndDate;
+
+    @Column
+    private LocalDate requestInitiatedDate;
+
+    @Column
+    private LocalDate consentApprovedDate;
 }

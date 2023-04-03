@@ -32,6 +32,9 @@ public class Patient {
 
 
 
+    @Column(nullable = false)
+    private String gender;
+
     private String email;
 
     private String address;

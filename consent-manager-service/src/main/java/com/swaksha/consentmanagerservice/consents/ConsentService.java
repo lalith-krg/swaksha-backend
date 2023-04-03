@@ -2,103 +2,143 @@ package com.swaksha.consentmanagerservice.consents;
 
 import com.swaksha.consentmanagerservice.entity.Consent;
 import com.swaksha.consentmanagerservice.repository.ConsentRepo;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
+@Service
+@Component
+@RequiredArgsConstructor
 public class ConsentService {
 
-    private ConsentRepo consentRepo;
+    @Autowired
+    private final ConsentRepo consentRepo;
 
-    public boolean verifyConsent(ConsentController.ConsentObj consentObj) {
+    @Autowired
+    public boolean verifyConsent(Consent consentObj) {
 
         boolean validity = true;
 
         // search consent object by consent ID
-        ConsentController.ConsentObj existingObj = searchConsentObjWithConsentID(consentObj.consentID());
+        Consent consent = searchConsentObjWithConsentID(consentObj.getConsentID());
+
+        printConsent(consent);
 
         // check every field in consent object
-        if (!Objects.equals(consentObj, existingObj))
-            validity = false;
+        if (!(Objects.equals(consentObj.getConsentID(), consent.getConsentID())))
+            return false;
+
+        if (!(Objects.equals(consentObj.getDoctorSSID(), consent.getDoctorSSID())))
+            return false;
+
+        if (!(Objects.equals(consentObj.getHiuSSID(), consent.getHiuSSID())))
+            return false;
+
+        if (!(Objects.equals(consentObj.getPatientSSID(), consent.getPatientSSID())))
+            return false;
+
+        if (!(Objects.equals(consentObj.getHipSSID(), consent.getHipSSID())))
+            return false;
+
+        if (!Objects.equals(consentObj.getConsentApprovedDate(), consent.getConsentApprovedDate()))
+            return false;
+
+        if (!Objects.equals(consentObj.getConsentEndDate(), consent.getConsentEndDate()))
+            return false;
+
+        if (!Objects.equals(consentObj.getDataAccessStartDate(), consent.getDataAccessStartDate()))
+            return false;
+
+        if (!Objects.equals(consentObj.getDataAccessEndDate(), consent.getDataAccessEndDate()))
+            return false;
+
+        if (!Objects.equals(consentObj.isSelfConsent(), consent.isSelfConsent()))
+            return false;
+
+        if (!(consentObj.isApproved() == consent.isApproved()))
+            return false;
+
+//        if (!Objects.equals(consentObj, consent))
+//            validity = false;
 
         return validity;
     }
 
-    public ConsentController.ConsentObj approveConsent(ConsentController.ConsentObj consentObj) {
+    @Autowired
+    public Consent approveConsent(Consent consentObj) {
 
-        // generate consent ID
-        String consentId = generateConsentID();
+        String consentId = consentObj.getConsentID();
 
-        ConsentController.ConsentObj newConsentObj = new ConsentController.ConsentObj(
-                consentObj.doctorSSID(), consentObj.hiuSSID(), consentObj.patientSSID(), consentObj.hipSSID(),
-                consentObj.dataAccessStartTime(), consentObj.dataAccessEndTime(), consentObj.requestInitiatedTime(),
-                LocalDateTime.now(), consentObj.consentEndTime(), consentId, consentObj.selfConsent()
-        );
+        // check if consent obj already exists
+        if (consentId == null || consentId == ""){
+            // generate consent ID
+            consentId = generateConsentID();
+            consentObj.setConsentID(consentId);
+        }
+
+        consentObj.setApproved(true);
+        consentObj.setConsentApprovedDate(LocalDate.now());
 
         // add the new consentObj to records
-        boolean res = addNewConsentObj(newConsentObj);
+        boolean res = addNewConsentObj(consentObj);
 
-        if(!res){
-            return new ConsentController.ConsentObj(null, null, null, null,
-                    null, null, null, null, null,
-                    null, false);
-        }
+        if(res)
+            return consentObj;
+        else
+            return blankConsent();
 
-        return newConsentObj;
     }
 
-    public ArrayList<ConsentController.ConsentObj> fetchConsents(String patientSSID) {
+//    @Autowired
+    public ArrayList<Consent> fetchConsents(String patientSSID) {
         // search for records with patientSSID
         // return records with patientSSID
-        return searchConsentObjWithSSID(patientSSID);
+//        return searchConsentObjWithSSID(patientSSID);
+        ArrayList<Consent> consents = (ArrayList<Consent>) this.consentRepo.findByPatientSSID(patientSSID);
+        System.out.println(consents.get(0).getConsentID());
+        return consents;
     }
+
 
     private String generateConsentID(){
-        return UUID.randomUUID().toString();
+        return UUID.randomUUID().toString().substring(0, 8);
     }
 
-    private ConsentController.ConsentObj searchConsentObjWithConsentID(String consentID){
-        Consent consent = this.consentRepo.searchConsentByID(consentID);
+    private Consent searchConsentObjWithConsentID(String consentID){
+        ArrayList<Consent> consents = (ArrayList<Consent>) this.consentRepo.findByConsentID(consentID);
 
-        if (consent == null)
-            return new ConsentController.ConsentObj(null, null, null, null,
-                null, null, null, null, null,
-                null, false);
-
-        else
-            return new ConsentController.ConsentObj(consent.getDoctorSSID(), consent.getHiuSSID(), consent.getPatientSSID(),
-                    consent.getHipSSID(), consent.getDataAccessStartTime(), consent.getDataAccessEndTime(),
-                    consent.getRequestInitiatedTime(), consent.getConsentApprovedTime(), consent.getConsentEndTime(),
-                    consent.getConsentID(), consent.isSelfConsent());
-    }
-
-    private ArrayList<ConsentController.ConsentObj> searchConsentObjWithSSID(String SSID){
-        ArrayList<Consent> consents = (ArrayList<Consent>) this.consentRepo.searchConsentBySSID(SSID);
-
-        ArrayList<ConsentController.ConsentObj> consentObjs = new ArrayList<ConsentController.ConsentObj>();
-
-        for(Consent consent: consents){
-            ConsentController.ConsentObj consentObj = new ConsentController.ConsentObj(consent.getDoctorSSID(),
-                    consent.getHiuSSID(), consent.getPatientSSID(), consent.getHipSSID(),
-                    consent.getDataAccessStartTime(), consent.getDataAccessEndTime(),
-                    consent.getRequestInitiatedTime(), consent.getConsentApprovedTime(), consent.getConsentEndTime(),
-                    consent.getConsentID(), consent.isSelfConsent());
-            consentObjs.add(consentObj);
+        if(consents.size()<1){
+            return blankConsent();
         }
 
-        return consentObjs;
+        Consent consent = consents.get(0);
+
+        if (consent == null)
+            return blankConsent();
+
+        else
+            return consent;
     }
 
-    private boolean addNewConsentObj(ConsentController.ConsentObj consentObj){
-        Consent consent = new Consent(consentObj.consentID(), consentObj.consentEndTime(), consentObj.selfConsent(),
-                consentObj.doctorSSID(), consentObj.hiuSSID(), consentObj.patientSSID(), consentObj.hipSSID(),
-                consentObj.dataAccessStartTime(), consentObj.dataAccessEndTime(), consentObj.requestInitiatedTime(),
-                consentObj.consentApprovedTime());
+//    @Autowired
+    public boolean addPendingConsent(Consent consentObj) {
 
-        consent = this.consentRepo.save(consent);
+        String consentId = generateConsentID();
+
+        consentObj.setConsentID(consentId);
+
+        return addNewConsentObj(consentObj);
+    }
+
+
+    private boolean addNewConsentObj(Consent consentObj){
+        Consent consent = this.consentRepo.save(consentObj);
 
         if(consent == null)
             return false;
@@ -106,14 +146,30 @@ public class ConsentService {
         return true;
     }
 
-    public boolean revokeConsent(ConsentController.ConsentObj consentObj) {
-        Consent consent = new Consent(consentObj.consentID(), consentObj.consentEndTime(), consentObj.selfConsent(),
-                consentObj.doctorSSID(), consentObj.hiuSSID(), consentObj.patientSSID(), consentObj.hipSSID(),
-                consentObj.dataAccessStartTime(), consentObj.dataAccessEndTime(), consentObj.requestInitiatedTime(),
-                consentObj.consentApprovedTime());
-
-        this.consentRepo.delete(consent);
+//    @Autowired
+    public boolean revokeConsent(Consent consentObj) {
+        this.consentRepo.delete(consentObj);
 
         return true;
+    }
+
+
+//    @Autowired
+    private Consent blankConsent(){
+        return new Consent(null, null, false, false,
+                null, null, null, null, null,
+                null, null, null);
+    }
+
+    private void printConsent(Consent consent){
+        System.out.println("ConsentID: " + consent.getConsentID());
+        System.out.println("Approved: " + consent.isApproved() + "\t\tSelf consent: " + consent.isSelfConsent());
+        System.out.println("Doctor: " + consent.getDoctorSSID() + "\t\tHIU: " + consent.getHiuSSID());
+        System.out.println("Patient: " + consent.getPatientSSID() + "\t\tHIP: " + consent.getHipSSID());
+        System.out.print("DataStart: "); System.out.print(consent.getDataAccessStartDate());
+        System.out.print("\t\tDataEnd: "); System.out.println(consent.getDataAccessEndDate());
+        System.out.print("RequestInit: "); System.out.print(consent.getRequestInitiatedDate());
+        System.out.print("\t\tConsentApproved: "); System.out.println(consent.getConsentApprovedDate());
+        System.out.println("ConsentEnd: " + consent.getConsentEndDate());
     }
 }

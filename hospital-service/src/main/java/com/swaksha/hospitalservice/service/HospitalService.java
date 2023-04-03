@@ -22,7 +22,9 @@ public class HospitalService {
         return true;
     }
 
+    // Consent Manager Calls HIP for EHR
     public boolean requestEHRFromHIP(Patient patient) {
+
         return true;
     }
 
@@ -34,6 +36,7 @@ public class HospitalService {
         return true;
     }
 
+    // HIU requesting CM for consent
     public boolean consentRequestFromHIU(Patient patient) {
         return true;
     }

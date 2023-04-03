@@ -1,69 +1,48 @@
 package com.swaksha.consentmanagerservice.patient;
 
+import lombok.RequiredArgsConstructor;
 import net.minidev.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+@RestController
+@RequiredArgsConstructor
 @RequestMapping("/cm/patient/auth")
 public class PatientController {
 
-    private final PatientService patientService = new PatientService();
+    @Autowired
+    private final PatientService patientService;
+
+    record Account(String ssid, String phoneNum, String encPin){}
 
     record PinToVerifyBody(String SSID, String encPin){}
 
     // Create patient credentials
     @PostMapping("/register")
-    public void registerCM(JSONObject newAcc){
+    public boolean registerPatient(@RequestBody Account account){
         // Save credentials
-    }
-
-    // Reset PIN
-    @PostMapping("/resetPin")
-    public void resetPin(String SSID, String phoneNum){
-        // Send OTP to registered phoneNum
-    }
-
-    // Confirm new PIN
-    @PostMapping("/confirmNewPin")
-    public void confirmNewPin(String SSID, String phoneNum, String OTP){
-        // Verify OTP and save new PIN
+        boolean registered = this.patientService.registerPatient(account.ssid, account.phoneNum, account.encPin);
+        return registered;
     }
 
     // Verify PIN
     @PostMapping("/verifyPin")
-    public void verifyPin(@RequestBody PinToVerifyBody pinToVerifyBody){
+    public boolean verifyPin(@RequestBody PinToVerifyBody pinToVerifyBody){
         // check pin
         boolean validity = this.patientService.verifyPin(pinToVerifyBody.SSID, pinToVerifyBody.encPin);
-
+        return validity;
     }
 
-    /*
-    @PostMapping("/init")
-    public void initConsent(String ssid){
-        //
+    // Confirm new PIN
+    @PostMapping("/updateAccount")
+    public void updateAccount(@RequestBody Account account){
+        // Save new PIN
+        boolean updated = this.patientService.updateAccount(account.ssid(), account.phoneNum(),
+                account.encPin());
     }
-
-    // Placing request for data
-    @PostMapping("/request")
-    public void requestData(String ssid){
-        //
-    }
-
-    // Confirm request with otp
-    @PostMapping("/confirm")
-    public void confirmWithOtp(String ssid){
-        //
-    }
-
-    // HIP acknowledging request
-    @PostMapping("/on-notify")
-    public void notifyPatient(String ssid){
-        //
-    }
-    */
 
 }
