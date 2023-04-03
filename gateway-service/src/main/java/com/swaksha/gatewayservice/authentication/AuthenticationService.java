@@ -3,9 +3,11 @@ package com.swaksha.gatewayservice.authentication;
 import com.twilio.Twilio;
 import com.twilio.rest.verify.v2.service.Verification;
 import com.twilio.rest.verify.v2.service.VerificationCheck;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class AuthenticationService {
     private static final String ACCOUNT_SID = "AC055a42070a8342f484b3ac015953bedd"; //System.getenv("ACbc91ba0b1ce5b5020130385133c2ae46");
     private static final String AUTH_TOKEN = "d0c63bce9f18a08423c7dee94fb6df9d"; //System.getenv("aa2cab81ac3f795ce2280dbe04659ef1");
@@ -32,8 +34,8 @@ public class AuthenticationService {
         Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
 
         VerificationCheck verificationCheck;
-            verificationCheck = VerificationCheck.creator(
-                            "VA0ad0491033a154559fb200f2d3e155a6", otp)
+//            verificationCheck = VerificationCheck.creator("VA0ad0491033a154559fb200f2d3e155a6", otp)
+            verificationCheck = VerificationCheck.creator("VA0ad0491033a154559fb200f2d3e155a6")
                     .setTo("+91" + mobile_number)
                     .create();
 

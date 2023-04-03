@@ -1,5 +1,6 @@
 package com.swaksha.gatewayservice.authentication;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +15,8 @@ import java.util.List;
 
 @RestController
 @Slf4j
+@Controller
+@RequiredArgsConstructor
 @RequestMapping(value = "/gateway/auth")
 public class AuthenticationController {
     private final AuthenticationService authenticationService;
@@ -22,10 +25,10 @@ public class AuthenticationController {
         response.setHeader("Access-Control-Allow-Origin", "*");
     }*/
 
-    public AuthenticationController(AuthenticationService authenticationService)
-    {
-        this.authenticationService = authenticationService;
-    }
+//    public AuthenticationController(AuthenticationService authenticationService)
+//    {
+//        this.authenticationService = authenticationService;
+//    }
 
     record send_otp_body(String mobile_number){}
     @CrossOrigin

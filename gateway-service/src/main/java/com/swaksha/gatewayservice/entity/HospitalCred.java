@@ -2,9 +2,10 @@ package com.swaksha.gatewayservice.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.stereotype.Component;
 
 @Entity
-@Data
+@Component
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
