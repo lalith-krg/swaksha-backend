@@ -10,8 +10,8 @@
         <module name="api-gateway" />
         <module name="hospital-service" />
         <module name="patient-service" />
-        <module name="eureka" />
         <module name="gateway-service" />
+        <module name="eureka" />
         <module name="consent-manager-service" />
       </profile>
     </annotationProcessing>

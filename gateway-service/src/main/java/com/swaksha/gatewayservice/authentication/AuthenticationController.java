@@ -1,5 +1,6 @@
 package com.swaksha.gatewayservice.authentication;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,13 +13,14 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@Slf4j
 @RequestMapping(value = "/gateway/auth")
 public class AuthenticationController {
     private final AuthenticationService authenticationService;
-    @ModelAttribute
+/*    @ModelAttribute
     public void setResponseHeader(HttpServletResponse response) {
         response.setHeader("Access-Control-Allow-Origin", "*");
-    }
+    }*/
 
     public AuthenticationController(AuthenticationService authenticationService)
     {

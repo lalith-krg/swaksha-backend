@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -16,7 +17,7 @@ import java.time.LocalDateTime;
 public class Patient {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+ //   @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(unique = true, nullable = false)
     private String ssid;
 
@@ -29,13 +30,14 @@ public class Patient {
     @Column(nullable = false)
     private String phone_number;
 
-    @Column(nullable = false)
-    private LocalDateTime dob;
+
 
     private String email;
 
     private String address;
     private String city;
     private String state;
+
+
 
 }

@@ -4,6 +4,18 @@ server:
 spring:
   application:
     name: GATEWAY-SERVICE
+  datasource:
+    url: jdbc:mysql://localhost:3306/security
+    username: root
+    password: root
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+    database: mysql
 
 eureka:
   client:

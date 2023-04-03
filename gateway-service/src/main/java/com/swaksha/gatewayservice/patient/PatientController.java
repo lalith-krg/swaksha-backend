@@ -1,7 +1,9 @@
 package com.swaksha.gatewayservice.patient;
 
 import net.minidev.json.JSONObject;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -11,10 +13,21 @@ import org.springframework.web.bind.annotation.RestController;
 public class PatientController {
 
     // Profile controller
+    private PatientService patientService;
+
+    @GetMapping("/demo")
+    public ResponseEntity<String> sayHello(){
+        return ResponseEntity.ok("Hello from secured patient end point");
+    }
+
+    @PostMapping("/login")
+    public void getSSID(){
+
+    }
 
     @PostMapping("/getSSID")
     public void getSSID(String mobileNum){
-        //
+
     }
 
     @PostMapping("/viewProfile")

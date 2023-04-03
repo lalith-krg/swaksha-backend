@@ -4,10 +4,11 @@ import com.swaksha.patientservice.entity.Patient;
 import com.swaksha.patientservice.entity.PatientCred;
 import com.swaksha.patientservice.service.PatientService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
+
+import java.net.URI;
 
 @RestController
 @RequestMapping("/patient")
@@ -22,6 +23,15 @@ public class PatientController {
         Patient patient = patientService.registerMobile(newPatient);
         return new ResponseEntity<>(patient, HttpStatus.OK);
     }
+    @PostMapping("/register")
+    public ResponseEntity<AuthResponse> register( HttpEntity<RegisterRequest> request){
+        String url="http://localhost:9005/api/v1/auth/register";
+        RestTemplate restTemplate=new RestTemplate();
+
+        ResponseEntity< AuthResponse>response =restTemplate.exchange(url, HttpMethod.POST,request,AuthResponse.class);
+        return response;
+
+    }
 
     @PostMapping(path="/register/govId")
 //    public ResponseEntity<Patient> registerGovId(@RequestBody Patient newPatient, @RequestBody PatientCred patientCred){
@@ -30,7 +40,7 @@ public class PatientController {
         return new ResponseEntity<>(patient, HttpStatus.OK);
     }
 
-    @PostMapping(path ="/login")
+
     public ResponseEntity<PatientCred> login(@RequestBody PatientCred patientCred) {
 
         boolean response = patientService.login(patientCred);
@@ -39,6 +49,28 @@ public class PatientController {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
         return new ResponseEntity<>(patientCred, HttpStatus.OK);
+    }
+
+    @PostMapping("/authenticate")
+    public ResponseEntity<AuthResponse> authenticate(HttpEntity<AuthRequest> request) {
+        //    var user=repository.findBySsid(request.getSsid());
+
+        //  if(user.isEmpty())user=repository.findByAbhaId(request.getAbhaId()).orElseThrow();
+        String url="http://localhost:9005/api/gateway/hospital/demo";
+        RestTemplate restTemplate=new RestTemplate();
+
+        ResponseEntity< AuthResponse>response =restTemplate.exchange(url, HttpMethod.POST,request,AuthResponse.class);
+        return response;
+
+    }
+    @GetMapping("/demo")
+    public ResponseEntity<String> sayHello(HttpEntity<String> request){
+
+        String url="http://localhost:9005/gateway/patient/demo";
+        RestTemplate restTemplate=new RestTemplate();
+
+        ResponseEntity< String>response =restTemplate.exchange(url, HttpMethod.GET,request,String.class);
+        return response;
     }
 
     @GetMapping(path ="/dashboard")
