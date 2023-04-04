@@ -60,6 +60,7 @@ public class AuthService {
                 .state(request.getState())
                 .first_name(request.getFirst_name())
                 .last_name(request.getLast_name())
+                .gender(request.getGender())
                 .email(request.getEmail()).build();
         prepository.save(user1);
         return AuthResponse.builder().

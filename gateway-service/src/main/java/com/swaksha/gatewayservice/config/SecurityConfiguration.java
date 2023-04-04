@@ -25,7 +25,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests()
                 .requestMatchers("/api/v1/auth/**","/gateway/auth/**")
                 .permitAll()
-                .requestMatchers("/gateway/patient/**")
+                .requestMatchers("/gateway/patient/**","/gateway/request/**")
                 .hasRole("USER")
                 .requestMatchers("/gateway/hospital/**")
                 .hasRole("HOSPITAL")

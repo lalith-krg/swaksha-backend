@@ -37,6 +37,7 @@ public class AuthenticationService {
 //            verificationCheck = VerificationCheck.creator("VA0ad0491033a154559fb200f2d3e155a6", otp)
             verificationCheck = VerificationCheck.creator("VA0ad0491033a154559fb200f2d3e155a6")
                     .setTo("+91" + mobile_number)
+                    .setCode(otp)
                     .create();
 
 

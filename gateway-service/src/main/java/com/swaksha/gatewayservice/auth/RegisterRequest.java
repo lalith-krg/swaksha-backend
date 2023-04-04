@@ -26,6 +26,7 @@ public class RegisterRequest {
 
     private String otp;
     private String phone_number;
+    private String gender;
 
     private LocalDateTime dob;
 

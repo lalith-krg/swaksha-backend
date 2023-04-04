@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class PatientController {
 
     // Profile controller
-    private PatientService patientService;
+    private final PatientService patientService;
 
     @GetMapping("/demo")
     public ResponseEntity<String> sayHello(){
