@@ -7,7 +7,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
@@ -29,7 +28,7 @@ public class RegisterRequest {
     private String phone_number;
     private String gender;
 
- //   private LocalDate date;
+    private LocalDateTime dob;
 
     private Role role;
     private String email;
@@ -37,6 +36,7 @@ public class RegisterRequest {
     private String address;
     private String city;
     private String state;
+
 
     private String cmPinPassword;
 

@@ -22,6 +22,7 @@ public class Patient {
     @Column(unique = true, nullable = false)
     private String ssid;
 
+
     @Column( nullable = false)
     private String first_name;
 
@@ -43,5 +44,6 @@ public class Patient {
     private String state;
 
     private String cmPinPassword;
+
 
 }

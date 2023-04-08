@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import java.util.Collection;
 import java.util.List;
 
-//@Component
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -40,10 +40,6 @@ public class PatientCred implements UserDetails {
         return List.of(new SimpleGrantedAuthority("ROLE_"+role.name()));
     }
 
-//    @Override
-//    public String getPassword() {
-//        return null;
-//    }
 
     @Override
     public String getUsername() {

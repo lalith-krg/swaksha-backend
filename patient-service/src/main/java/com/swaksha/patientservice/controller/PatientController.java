@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestOperations;
 import org.springframework.web.client.RestTemplate;
 
+
 import java.awt.image.renderable.RenderableImage;
+
 import java.net.URI;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -71,6 +73,8 @@ public class PatientController {
         return response;
     }
 
+
+
     @PostMapping(path="/register/govId")
 //    public ResponseEntity<Patient> registerGovId(@RequestBody Patient newPatient, @RequestBody PatientCred patientCred){
     public ResponseEntity<Patient> registerGovId(@RequestBody Patient newPatient){
@@ -90,24 +94,16 @@ public class PatientController {
     }
 
 
-    public ResponseEntity<PatientCred> login(@RequestBody PatientCred patientCred) {
-
-        boolean response = patientService.login(patientCred);
-
-        if(!response) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        }
-        return new ResponseEntity<>(patientCred, HttpStatus.OK);
-    }
-
     @PostMapping("/authenticate")
     public ResponseEntity<AuthResponse> authenticate(HttpEntity<AuthRequest> request) {
         //    var user=repository.findBySsid(request.getSsid());
 
         //  if(user.isEmpty())user=repository.findByAbhaId(request.getAbhaId()).orElseThrow();
+
         String url="http://localhost:9005/api/v1/auth/authenticate";
         RestTemplate restTemplate=new RestTemplate();
         System.out.println(request.getBody().getSsid());
+
         ResponseEntity< AuthResponse>response =restTemplate.exchange(url, HttpMethod.POST,request,AuthResponse.class);
         return response;
 

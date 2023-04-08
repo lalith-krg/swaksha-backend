@@ -18,6 +18,7 @@ public class AuthController {
     private final AuthenticationService otp_service;
 
 
+
 /*    public AuthController(AuthService service,AuthenticationService authenticationService)
     {
         this.service=service;
@@ -32,8 +33,10 @@ public class AuthController {
     @CrossOrigin
     @PostMapping("/verify-otp")
     public ResponseEntity<AuthResponse> register( @RequestBody RegisterRequest request){
+
         System.out.println(request.getPhone_number());
         System.out.println(request.getOtp());
+
         String resp=otp_service.verify_otp(request.getOtp(),request.getPhone_number());
         System.out.println(resp);
 
@@ -43,6 +46,7 @@ public class AuthController {
 
     @PostMapping("/authenticate")
     public ResponseEntity<AuthResponse> authenticate( @RequestBody AuthRequest request){
+
         System.out.println(request.getSsid());
         return ResponseEntity.ok(service.authenticate(request));
     }
@@ -50,4 +54,7 @@ public class AuthController {
     public String sayHello(){
         return "hello from patient endpoint";
     }
+
+
+
 }

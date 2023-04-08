@@ -72,7 +72,8 @@ public class AuthService {
 
     public AuthResponse authenticate(AuthRequest request) {
     //    var user=repository.findBySsid(request.getSsid());
-      //  System.out.println(request.getPassword());
+
+
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getSsid(),request.getPassword())
         );
