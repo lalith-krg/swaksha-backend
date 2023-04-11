@@ -5,7 +5,7 @@ spring:
   application:
     name: GATEWAY-SERVICE
   datasource:
-    url: jdbc:mysql://localhost:3306/swaksha
+    url: jdbc:mysql://localhost:3306/security
     username: root
     password: Tripathi
   jpa:

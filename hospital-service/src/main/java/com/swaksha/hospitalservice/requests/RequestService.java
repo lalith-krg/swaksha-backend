@@ -15,7 +15,7 @@ import java.util.ArrayList;
 public class RequestService {
     private final EhrRepo ehrRepo;
     private final ConsentRepo consentRepo;
-
+    
     public RequestController.ConsentObj findConsentWithID(String consentID){
         Consent consent = ((ArrayList<Consent>) this.consentRepo.findByConsentID(consentID)).get(0);
         return cObjOf(consent);

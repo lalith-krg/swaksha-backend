@@ -4,20 +4,24 @@ package com.swaksha.hospitalservice.entity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.*;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 
 @Entity
-@Data
+@Component
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
+@Table(name = "Doctor_Details")
 public class Doctor {
     @Id
     @Column(unique = true, nullable = false)
-    private String ssID;
+    private String ssid;
 
     @Column(nullable = false)
     private String firstName;
@@ -26,9 +30,11 @@ public class Doctor {
     private String lastName;
 
     @Column(nullable = false)
-    private String phoneNum;
+    private String phone_number;
 
-    @Column
+    private String address;
+
+    @Column(nullable = true)
     private LocalDate dob;
 
     private String gender;
