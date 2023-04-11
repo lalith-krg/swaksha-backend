@@ -16,8 +16,8 @@ public class RequestService {
     private final EhrRepo ehrRepo;
     private final ConsentRepo consentRepo;
 
-    public RequestController.ConsentObj findConsentWithId(String consentId){
-        Consent consent = ((ArrayList<Consent>) this.consentRepo.findByConsentId(consentId)).get(0);
+    public RequestController.ConsentObj findConsentWithID(String consentID){
+        Consent consent = ((ArrayList<Consent>) this.consentRepo.findByConsentID(consentID)).get(0);
         return cObjOf(consent);
     }
 

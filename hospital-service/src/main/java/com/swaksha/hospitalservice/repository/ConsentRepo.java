@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface ConsentRepo extends JpaRepository<Consent, String> {
-    List<Consent> findByConsentId(String consentId);
+    List<Consent> findByConsentID(String consentID);
 }

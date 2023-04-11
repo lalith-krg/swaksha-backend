@@ -31,7 +31,7 @@ public class RequestController {
 
     record HiuPlaceRequest(String docSSID, String patientSSID){}
 
-    record HiuPlaceRequestWithConsent(String docSSID, String patientSSID, String consentId){}
+    record HiuPlaceRequestWithConsent(String docSSID, String patientSSID, String consentID){}
 
     record HiuRequestBody(String docSSID, String hiuSSID, String patientSSID, String dataPostUrl) {}
 
@@ -69,7 +69,7 @@ public class RequestController {
         HttpEntity<HiuRequestWithConsent> reqEntity =
                 new HttpEntity<>(new HiuRequestWithConsent(hiuPlaceRequestWithConsent.docSSID, "hiussid",
                         hiuPlaceRequestWithConsent.patientSSID,
-                        this.requestService.findConsentWithId(hiuPlaceRequestWithConsent.consentId), "URL"));
+                        this.requestService.findConsentWithID(hiuPlaceRequestWithConsent.consentID), "URL"));
 
         ResponseEntity<OnHiuRequestBody> ohr = this.restTemplate.postForEntity(url, reqEntity, OnHiuRequestBody.class);
     }
