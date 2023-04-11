@@ -17,11 +17,10 @@ import java.time.LocalDateTime;
 public class Doctor {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(unique = true, nullable = false)
+    @Column(unique = true)
     private String ssid;
 
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false)
     private String first_name;
 
     @Column(nullable = false)
@@ -30,7 +29,7 @@ public class Doctor {
     @Column(nullable = false)
     private String phone_number;
 
-    @Column(nullable = false)
+
     private LocalDateTime dob;
 
     @Column(nullable = false)
