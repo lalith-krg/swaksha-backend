@@ -18,7 +18,7 @@ import java.net.Authenticator;
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
-
+@CrossOrigin(origins= {"*"})
 public class AuthController {
     private final AuthService service;
     private final OtpService otp_service;

@@ -27,7 +27,7 @@ public class SecurityConfiguration {
                 .disable()
                 .authorizeHttpRequests()
 //                .requestMatchers("/api/v1/auth/**","/gateway/auth/**")
-                .requestMatchers("/api/v1/auth/**","/gateway/auth/**")
+                .requestMatchers("/api/v1/auth/**","/gateway/auth/**", "/gateway/request/**")
                 .permitAll()
                 .requestMatchers("/gateway/patient/**","/gateway/request/**")
                 .hasRole("USER")

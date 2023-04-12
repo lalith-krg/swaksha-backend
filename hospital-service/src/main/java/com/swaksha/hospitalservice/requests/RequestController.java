@@ -4,11 +4,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
@@ -17,6 +17,8 @@ import java.util.Objects;
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/hospital/requests")
+@RestController
+@CrossOrigin(origins= {"*"})
 public class RequestController {
 
     private final RestTemplate restTemplate = new RestTemplateBuilder().build();
@@ -29,7 +31,7 @@ public class RequestController {
                              LocalDate consentEndDate, String consentID, boolean selfConsent, boolean isApproved) {
     }
 
-    record HiuPlaceRequest(String docSSID, String patientSSID){}
+    record HiuPlaceRequest(String patientSSID){}
 
     record HiuPlaceRequestWithConsent(String docSSID, String patientSSID, String consentID){}
 
@@ -48,16 +50,24 @@ public class RequestController {
 
     record OnVerifyConsentBody(String response, String reqSSID, ConsentObj consentObj){}
 
+    @PostMapping("/demo")
+    public String demo(){
+        return "hello !";
+    }
     @PostMapping("/newRequest")
-    public void hiuRequest(@RequestBody HiuPlaceRequest hiuPlaceRequest) {
-
+    public HttpEntity<OnHiuRequestBody> hiuRequest(@RequestBody HiuPlaceRequest hiuPlaceRequest, Authentication authentication) {
+            String ssid= authentication.getName();
+//        System.out.println(hiuPlaceRequest.docSSID);
+//        System.out.println(hiuPlaceRequest.patientSSID);
         // call /gateway/request/hiu/request
-        String url = "http://localhost:8999/gateway/request/hiu/request";
+        String url = "http://localhost:9005/gateway/request/hiu/request";
 
-        HttpEntity<HiuRequestBody> reqEntity = new HttpEntity<>(new HiuRequestBody(hiuPlaceRequest.docSSID,
-                "hiussid", hiuPlaceRequest.patientSSID, "URL"));
+        HttpEntity<HiuRequestBody> reqEntity = new HttpEntity<>(new HiuRequestBody(ssid,
+                "123456789", hiuPlaceRequest.patientSSID, "URL"));
 
         ResponseEntity<OnHiuRequestBody> ohr = this.restTemplate.postForEntity(url, reqEntity, OnHiuRequestBody.class);
+
+        return new ResponseEntity<>(ohr.getBody(), HttpStatus.OK);
     }
 
     @PostMapping("/requestWithConsent")

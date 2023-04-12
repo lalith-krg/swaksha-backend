@@ -74,14 +74,27 @@ public class RequestController {
 //=======
     public HttpEntity<OnHiuRequestBody> hiuRequest(@RequestBody HiuRequestBody hiuRequestBody){
 //>>>>>>> 97a42a60e0194b7840564736af085be8435ce9eb
+
+        System.out.println("hehe boi");
+
         // Check validity of all SSIDs
 
+        System.out.println("DocSSID");
+        System.out.println(hiuRequestBody.docSSID);
+        System.out.println("hiuSSID");
+        System.out.println(hiuRequestBody.hiuSSID);
+        System.out.println("PatientSSID");
+        System.out.println(hiuRequestBody.patientSSID);
+
         boolean validity = this.requestService.validateSSID(hiuRequestBody.docSSID);
+
+        System.out.println(validity);
 
         if (!this.requestService.validateSSID(hiuRequestBody.hiuSSID))
             validity = false;
         if (!this.requestService.validateSSID(hiuRequestBody.patientSSID))
             validity = false;
+        System.out.println("hehe" + validity);
 
         if(!validity){
             // respond with invalid details
@@ -97,12 +110,16 @@ public class RequestController {
         boolean saved = this.requestService.saveHiuLink(hiuRequestBody.hiuSSID, hiuRequestBody.dataPostUrl);
 
 //>>>>>>> 97a42a60e0194b7840564736af085be8435ce9eb
-        ConsentObj consentObj = new ConsentObj(hiuRequestBody.docSSID, hiuRequestBody.hiuSSID, hiuRequestBody.patientSSID, null, null, null, LocalDate.now(), null, null, null, false, false);
+        ConsentObj consentObj = new ConsentObj(hiuRequestBody.docSSID, hiuRequestBody.hiuSSID, hiuRequestBody.patientSSID, null, null, null, null, null, null, null, false, false);
 
         // call /gateway/patient/getConsent
         // String url = "http://localhost:8999/gateway/patient/getConsent";
         // HttpEntity<ConsentObj> consentEntity = new HttpEntity<>(consentObj);
         // this.restTemplate.postForEntity(url, consentEntity, Boolean.class);
+
+
+        System.out.println("Reached here");
+
 
         // call /cm/consents/addPendingConsent
         String url = "http://localhost:8999/cm/consents/addPendingConsent";
@@ -115,6 +132,7 @@ public class RequestController {
 //            return new OnHiuRequestBody("Consent Request Fail", hiuRequestBody.docSSID, hiuRequestBody.hiuSSID);
 //=======
         HttpEntity<ConsentObj> consentEntity = new HttpEntity<>(consentObj);
+        System.out.println(consentEntity);
         ResponseEntity<Boolean> response = this.restTemplate.postForEntity(url, consentEntity, Boolean.class);
 
         if (Boolean.TRUE.equals(response.getBody()))

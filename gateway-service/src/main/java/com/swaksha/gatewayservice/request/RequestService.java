@@ -29,17 +29,17 @@ public class RequestService {
     public boolean validateSSID(String SSID) {
         boolean validity = false;
         ArrayList<Patient> p_arr = (ArrayList<Patient>) this.patientRepo.findBySsid(SSID);
-        if (p_arr.size()>0 && p_arr.get(0).getSsid() == SSID){
+        if (p_arr.size()>0 && p_arr.get(0).getSsid().equals(SSID)){
             return true;
         }
 
         ArrayList<Doctor> d_arr = (ArrayList<Doctor>) this.doctorRepo.findBySsid(SSID);
-        if (d_arr.size()>0 && d_arr.get(0).getSsid() == SSID){
+        if (d_arr.size()>0 && d_arr.get(0).getSsid().equals(SSID)){
             return true;
         }
 
         ArrayList<Hospital> h_arr = (ArrayList<Hospital>) this.hospitalRepo.findBySsid(SSID);
-        if (h_arr.size()>0 && h_arr.get(0).getSsid() == SSID){
+        if (h_arr.size()>0 && h_arr.get(0).getSsid().equals(SSID)){
             return true;
         }
 

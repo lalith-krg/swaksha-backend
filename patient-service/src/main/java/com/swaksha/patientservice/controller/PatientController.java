@@ -204,8 +204,12 @@ public class PatientController {
     public OnFetchConsentsResponse fetchConsents(@RequestBody PatientSSIDBody patientSSIDBody){
 
         String url = "http://localhost:8999/gatewayRequest/fetchConsents";
-        ResponseEntity<OnFetchConsentsResponse> re = this.restTemplate.postForEntity(url, patientSSIDBody,
+
+        RestTemplate restTemplate = new RestTemplate();
+
+        ResponseEntity<OnFetchConsentsResponse> re = restTemplate.postForEntity(url, patientSSIDBody,
                 OnFetchConsentsResponse.class);
+
 
         return re.getBody();
     }
