@@ -43,3 +43,4 @@ consent-manager-service/target/
 api-gateway/target/
 admin-service/target/
 
+.env
