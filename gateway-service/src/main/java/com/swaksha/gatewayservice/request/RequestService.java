@@ -12,6 +12,7 @@ import com.swaksha.gatewayservice.repository.PatientRepo;
 import io.swagger.v3.oas.annotations.servers.Server;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
+
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
@@ -28,9 +29,10 @@ public class RequestService {
     private final HiuUrlRepo hiuUrlRepo;
 
 
+
     public boolean validateSSID(String SSID) {
         boolean validity = false;
-        System.out.println(SSID);
+     //   System.out.println(SSID);
         ArrayList<Patient> p_arr = (ArrayList<Patient>) this.patientRepo.findBySsid(SSID);
         //System.out.println(p_arr.get(0).getSsid());
 

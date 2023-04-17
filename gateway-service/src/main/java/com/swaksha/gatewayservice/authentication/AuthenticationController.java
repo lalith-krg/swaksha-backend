@@ -20,15 +20,6 @@ import java.util.List;
 @RequestMapping(value = "/gateway/auth")
 public class AuthenticationController {
     private final AuthenticationService authenticationService;
-/*    @ModelAttribute
-    public void setResponseHeader(HttpServletResponse response) {
-        response.setHeader("Access-Control-Allow-Origin", "*");
-    }*/
-
-//    public AuthenticationController(AuthenticationService authenticationService)
-//    {
-//        this.authenticationService = authenticationService;
-//    }
 
     record send_otp_body(String mobile_number){}
     @CrossOrigin
@@ -68,11 +59,3 @@ public class AuthenticationController {
 }
 
 
-// @RestController
-// @RequestMapping("api/v1")
-// public class DefaultController {
-//     @GetMapping("/index")
-//     public String index(){
-//         return "Hello World";
-//     }
-// }

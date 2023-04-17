@@ -30,6 +30,7 @@ public class PatientService {
 
 //    @Autowired
     public boolean verifyPin(String patientSSID, String encPin) {
+
         System.out.println(patientSSID);
         System.out.println(encPin);
 

@@ -43,7 +43,6 @@ public class Patient {
     private String city;
     private String state;
 
-
     private String cmPinPassword;
 
 

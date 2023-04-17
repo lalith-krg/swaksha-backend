@@ -48,17 +48,21 @@ public class ConsentController {
     public HttpEntity<OnApproveConsentBody> verifyConsentCM(@RequestBody ApproveConsentBody approveConsentBody){
         // Verify that the patient pin is valid
         // call /cm/patient/auth/verifyPin
+
         String url = "http://localhost:9006/cm/patient/auth/verifyPin";
 //        System.out.println(approveConsentBody.patientSSID);
 //        System.out.println(approveConsentBody.encPin);
+
         HttpEntity<PinToVerifyBody> entity = new HttpEntity<>(new PinToVerifyBody(
                 approveConsentBody.patientSSID, approveConsentBody.encPin
         ));
         ResponseEntity<Boolean> re = this.restTemplate.postForEntity(url, entity, Boolean.class);
 
         // Respond to /gateway/request/onApproveConsent
+
         String returnUrl = "http://localhost:9005/gateway/request/onApproveConsent";
         System.out.println(re.getBody());
+
         if(!re.getBody()){
             HttpEntity<OnApproveConsentBody> approveEntity = new HttpEntity<>(new OnApproveConsentBody(
                     "Rejected", approveConsentBody.consentObj
@@ -84,7 +88,7 @@ public class ConsentController {
     public HttpEntity<OnVerifyConsentBody> verifyConsentCM(@RequestBody VerifyConsentBody verifyConsentBody){
         // Verify the consent object is legit and reqSSID is associated with the co
         boolean validity = this.consentService.verifyConsent(consentOf(verifyConsentBody.consentObj));
-//        System.out.println(verifyConsentBody.consentObj.patientSSID);
+
         // Respond to /gateway/request/onVerifyConsent
         String returnUrl = "http://localhost:8999/gateway/request/onVerifyConsent";
 
@@ -152,6 +156,7 @@ public class ConsentController {
         // save consentObj
         System.out.println("hello from consent");
         System.out.println(consentObj.patientSSID);
+
         return this.consentService.addPendingConsent(consentOf(consentObj));
     }
 

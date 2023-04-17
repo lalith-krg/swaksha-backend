@@ -20,10 +20,9 @@ import org.springframework.stereotype.Component;
 public class ApiKeys {
 
     @Id
-    @Column(unique = true,nullable = false)
+    @Column(unique = true, nullable = false)
     String ssid;
 
-    @Id
-    @Column(unique = true,nullable = false)
+    @Column(unique = true, nullable = false)
     String apiKey;
 }

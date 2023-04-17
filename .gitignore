@@ -43,3 +43,7 @@ consent-manager-service/target/
 api-gateway/target/
 admin-service/target/
 
+<<<<<<< HEAD
+=======
+.env
+>>>>>>> eb5ce43a115b6d3c833e6d4e45bee23c109835c8

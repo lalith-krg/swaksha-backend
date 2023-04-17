@@ -1,12 +1,19 @@
 package com.swaksha.gatewayservice.auth;
 
 import com.swaksha.gatewayservice.authentication.AuthenticationService;
-import jakarta.servlet.http.HttpServletResponse;
+
+import com.swaksha.gatewayservice.repository.APIRepo;
+
+import jakarta.servlet.http.HttpServletRequest;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+
+import java.net.http.HttpResponse;
+import java.util.UUID;
 
 
 @RestController
@@ -18,12 +25,9 @@ public class AuthController {
     private final AuthenticationService otp_service;
 
 
+    record assignRequest(String ssid){}
 
-/*    public AuthController(AuthService service,AuthenticationService authenticationService)
-    {
-        this.service=service;
-        this.otp_service = authenticationService;
-    }*/
+
     @CrossOrigin
     @PostMapping("/send-otp")
     public String sendOtp(@RequestBody SendOtp request){
@@ -50,11 +54,24 @@ public class AuthController {
         System.out.println(request.getSsid());
         return ResponseEntity.ok(service.authenticate(request));
     }
+
+    @PostMapping("/assign-api-key")
+    public String createApiKey(@RequestBody assignRequest request){
+        String api_key = service.assignAPIKey(request.ssid);
+        return api_key;
+    }
+
+    @PostMapping("/verify-api-key")
+    public boolean verifyApiKey(@RequestBody assignRequest request, HttpServletRequest http_request){
+        String api_key = http_request.getHeader("swaksha-api-key");
+        boolean valid = service.verifyAPIKey(request.ssid, api_key);
+        return valid;
+    }
+
+
     @PostMapping("/demo")
     public String sayHello(){
         return "hello from patient endpoint";
     }
-
-
 
 }

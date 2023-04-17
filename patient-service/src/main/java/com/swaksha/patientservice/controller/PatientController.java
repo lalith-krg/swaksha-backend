@@ -12,7 +12,6 @@ import org.springframework.web.client.RestOperations;
 import org.springframework.web.client.RestTemplate;
 
 
-//import java.awt.image.renderable.RenderableImage;
 
 import java.net.URI;
 import java.time.LocalDate;
@@ -33,7 +32,9 @@ public class PatientController {
                       LocalDate requestInitiatedDate, LocalDate consentApprovedDate,
                       LocalDate consentEndDate, String consentID, boolean selfConsent, boolean isApproved){}
 
+
     record ApproveConsentBody( String encPin, ConsentObj consentObj){}
+
 
     record ApproveConsentResponse(String response){}
 
@@ -208,5 +209,6 @@ public class PatientController {
         ResponseEntity<OnFetchConsentsResponse> response=restTemplate.exchange(url, HttpMethod.POST,request,OnFetchConsentsResponse.class);
         return response;
     }
+
 
 }

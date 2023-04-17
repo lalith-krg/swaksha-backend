@@ -101,7 +101,7 @@ public class ConsentService {
         // return records with patientSSID
 //        return searchConsentObjWithSSID(patientSSID);
         ArrayList<Consent> consents = (ArrayList<Consent>) this.consentRepo.findByPatientSSID(patientSSID);
-        System.out.println(consents.get(0).getConsentID());
+
         return consents;
     }
 
