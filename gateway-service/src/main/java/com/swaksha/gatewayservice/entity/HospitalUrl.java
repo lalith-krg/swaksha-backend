@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -12,11 +13,12 @@ import lombok.NoArgsConstructor;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Table(name="Hiu_Url")
-public class HiuUrl {
+public class HospitalUrl {
     @Id
-    String hiuSsid;
+    String hospitalSsid;
 
     @Column
-    String hiuUrl;
+    String hospitalUrl;
 }

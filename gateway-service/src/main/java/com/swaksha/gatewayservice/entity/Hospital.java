@@ -32,6 +32,7 @@ public class Hospital {
 
     private String email;
 
+    private String dataPostUrl;
     private String address;
     private String city;
     private String state;

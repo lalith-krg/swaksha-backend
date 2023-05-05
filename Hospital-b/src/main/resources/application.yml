@@ -1,0 +1,15 @@
+server:
+  port: 9009
+
+spring:
+  application:
+    name: HOSPITAL-SERVICE
+  datasource:
+    url: jdbc:mysql://localhost:3306/HospitalB
+    username: root
+    password: root
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+

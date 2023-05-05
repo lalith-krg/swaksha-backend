@@ -1,9 +1,14 @@
 package com.swaksha.hospitalservice.requests;
 
+import com.swaksha.hospitalservice.entity.Ehr;
+import com.swaksha.hospitalservice.entity.Patient;
+import com.swaksha.hospitalservice.repository.EhrRepo;
+import com.swaksha.hospitalservice.repository.PatientRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -12,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Objects;
 
 @Controller
@@ -25,22 +31,26 @@ public class RequestController {
 
     private final RequestService requestService;
 
+    private final PatientRepo patientRepo;
+
+    private final EhrRepo ehrRepo;
     public record ConsentObj(String doctorSSID, String hiuSSID, String patientSSID, String hipSSID,
                              LocalDate dataAccessStartDate, LocalDate dataAccessEndDate,
                              LocalDate requestInitiatedDate, LocalDate consentApprovedDate,
                              LocalDate consentEndDate, String consentID, boolean selfConsent, boolean isApproved) {
     }
 
-    record HiuPlaceRequest(String patientSSID){}
 
+    record EhrData(String data,String patientSSID){}
     record HiuPlaceRequestWithConsent(String docSSID, String patientSSID, String consentID){}
 
-    record HiuRequestBody(String docSSID, String hiuSSID, String patientSSID, String dataPostUrl) {}
+    record HiuRequestBody(String hipSSID,String patientSSID,String doctorSSID) {}
 
     record HiuRequestWithConsent(String docSSID, String hiuSSID, String patientSSID, ConsentObj consentObj,
                                  String dataPostUrl){}
 
     record OnHiuRequestBody(String response, String docSSID, String hiuSSID){}
+
 
     record HipRequestBody(ConsentObj consentObj, String dataPostUrl){}
 
@@ -55,15 +65,20 @@ public class RequestController {
         return "hello !";
     }
     @PostMapping("/newRequest")
-    public HttpEntity<OnHiuRequestBody> hiuRequest(@RequestBody HiuPlaceRequest hiuPlaceRequest, Authentication authentication) {
-            String ssid= authentication.getName();
+    public HttpEntity<OnHiuRequestBody> hiuRequest(@RequestBody HiuRequestBody hiuPlaceRequest, Authentication authentication) {
+
+        // get ssid of hospital from API key .
+        // get dataposturl from hospital itself as input .
+
+        String ssid= authentication.getName();
 //        System.out.println(hiuPlaceRequest.docSSID);
 //        System.out.println(hiuPlaceRequest.patientSSID);
         // call /gateway/request/hiu/request
         String url = "http://localhost:9005/gateway/request/hiu/request";
 
-        HttpEntity<HiuRequestBody> reqEntity = new HttpEntity<>(new HiuRequestBody(ssid,
-                "123456789", hiuPlaceRequest.patientSSID, "URL"));
+
+        HiuRequestBody newHiuRequestBody=new HiuRequestBody(hiuPlaceRequest.hipSSID,hiuPlaceRequest.patientSSID,ssid);
+        HttpEntity<HiuRequestBody> reqEntity = new HttpEntity<>(newHiuRequestBody);
 
         ResponseEntity<OnHiuRequestBody> ohr = this.restTemplate.postForEntity(url, reqEntity, OnHiuRequestBody.class);
 
@@ -84,6 +99,27 @@ public class RequestController {
         ResponseEntity<OnHiuRequestBody> ohr = this.restTemplate.postForEntity(url, reqEntity, OnHiuRequestBody.class);
     }
 
+    @PostMapping("/getRequestedData")
+    public String storeRequestedData(@RequestBody List<EhrData> ehrData)
+    {
+        Patient patient=patientRepo.findPatientBySsID(ehrData.get(0).patientSSID);
+        for(int i=0;i<ehrData.size();i++){
+            System.out.println(ehrData.get(i).patientSSID);
+            System.out.println(ehrData.get(i).data);
+
+            Ehr ehr=new Ehr();
+            ehr.setData(ehrData.get(i).data);
+            ehr.setPatient(patient);
+            ehrRepo.save(ehr);
+        }
+
+
+    //    Ehr.builder().data(ehrData.getData()).patient(ehrData.getPatient());
+
+
+        return "data saved";
+    }
+
     @PostMapping("/hip/sendRequest")
     public void hipSendRequest(@RequestBody HipRequestBody hipRequestBody){
 
@@ -98,8 +134,11 @@ public class RequestController {
 
         // if verified send data
         if(Objects.equals(Objects.requireNonNull(vc_re.getBody()).response, "Verified")){
-            // send data
-            // make call on hipRequestBody.dataPostUrl
+            url= hipRequestBody.dataPostUrl();
+            List<Ehr> ehrData=ehrRepo.findByPatientSsID(hipRequestBody.consentObj.patientSSID);
+
+            ResponseEntity<String> response=this.restTemplate.postForEntity(url,ehrData,String.class);
+            System.out.println(response.getBody());
         }
         else{
             // notify error

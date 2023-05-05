@@ -1,5 +1,7 @@
 package com.swaksha.gatewayservice.request;
 
+import com.swaksha.gatewayservice.entity.HospitalUrl;
+import com.swaksha.gatewayservice.repository.HospitalUrlRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
@@ -26,6 +28,7 @@ import java.util.Objects;
 public class RequestController {
 
     private final RequestService requestService;
+
     private RestTemplate restTemplate = new RestTemplateBuilder().build();
 
     record ConsentObj(String doctorSSID, String hiuSSID, String patientSSID, String hipSSID,
@@ -33,16 +36,8 @@ public class RequestController {
                       LocalDate requestInitiatedDate, LocalDate consentApprovedDate,
                       LocalDate consentEndDate, String consentID, boolean selfConsent, boolean isApproved){}
 
-//<<<<<<< HEAD
-//    record HiuRequestBody(String docSSID, String hiuSSID, String patientSSID){}
-//
-//    record OnHiuRequestBody(String response, String docSSID, String hiuSSID){}
-//
-//    record OnHipRequestBody(String response){}
-//
-//    record HiuRequestWithConsentBody(String docSSID, String hiuSSID, String patientSSID, ConsentObj consentObj){}
-//=======
-    record HiuRequestBody(String docSSID, String hiuSSID, String patientSSID, String dataPostUrl){}
+
+    record HiuRequestBody(String doctorSSID, String hiuSSID, String patientSSID,String hipSsid){}
 
     record OnHiuRequestBody(String response, String docSSID, String hiuSSID){}
 
@@ -56,6 +51,8 @@ public class RequestController {
     record ApproveConsentBody(String patientSSID, String encPin, ConsentObj consentObj){}
 
     record ApproveConsentResponse(String response){}
+
+
 
     record VerifyConsentResponse(String response){}
 
@@ -73,9 +70,8 @@ public class RequestController {
 
     // HIU places request for data
     @PostMapping("/hiu/request")
-//<<<<<<< HEAD
-//    public OnHiuRequestBody hiuRequest(@RequestBody HiuRequestBody hiuRequestBody){
-//=======
+
+
     public HttpEntity<OnHiuRequestBody> hiuRequest(@RequestBody HiuRequestBody hiuRequestBody){
 
         System.out.println("hehe boi");
@@ -83,19 +79,20 @@ public class RequestController {
         // Check validity of all SSIDs
 
         System.out.println("DocSSID");
-        System.out.println(hiuRequestBody.docSSID);
+        System.out.println(hiuRequestBody.doctorSSID);
         System.out.println("hiuSSID");
         System.out.println(hiuRequestBody.hiuSSID);
         System.out.println("PatientSSID");
         System.out.println(hiuRequestBody.patientSSID);
 
-        boolean validity = this.requestService.validateSSID(hiuRequestBody.docSSID);
+        boolean validity = this.requestService.validateSSID(hiuRequestBody.doctorSSID);
 
+        System.out.println("val 1");
         System.out.println(validity);
 
 
-        if (!this.requestService.validateSSID(hiuRequestBody.hiuSSID))
-            validity = false;
+//        if (!this.requestService.validateSSID(hiuRequestBody.hiuSSID))
+//            validity = false;
         if (!this.requestService.validateSSID(hiuRequestBody.patientSSID))
             validity = false;
 
@@ -105,18 +102,16 @@ public class RequestController {
             // respond with invalid details
 
             return new HttpEntity<OnHiuRequestBody>(new OnHiuRequestBody("Invalid SSID",
-                    hiuRequestBody.docSSID, hiuRequestBody.hiuSSID));
+                    hiuRequestBody.doctorSSID, hiuRequestBody.hiuSSID));
         }
 
-        boolean saved = this.requestService.saveHiuLink(hiuRequestBody.hiuSSID, hiuRequestBody.dataPostUrl);
+    //    boolean saved = this.requestService.saveHiuLink(hipRequestBody.consentObj.hiuSSID, hipRequestBody.dataPostUrl);
+
+        //hiu ssid must be extracted from API key .
+        ConsentObj consentObj = new ConsentObj(hiuRequestBody.doctorSSID,"123456789",hiuRequestBody.patientSSID,hiuRequestBody.hipSsid,null,null,null,null,null,null,false,false);
 
 
-        ConsentObj consentObj = new ConsentObj(hiuRequestBody.docSSID, hiuRequestBody.hiuSSID, hiuRequestBody.patientSSID, null, null, null, null, null, null, null, false, false);
 
-        // call /gateway/patient/getConsent
-        // String url = "http://localhost:8999/gateway/patient/getConsent";
-        // HttpEntity<ConsentObj> consentEntity = new HttpEntity<>(consentObj);
-        // this.restTemplate.postForEntity(url, consentEntity, Boolean.class);
 
 
 
@@ -124,16 +119,16 @@ public class RequestController {
 
 
         // call /cm/consents/addPendingConsent
-        String url = "http://localhost:8999/cm/consents/addPendingConsent";
+        String url = "http://localhost:9006/cm/consents/addPendingConsent";
 
         HttpEntity<ConsentObj> consentEntity = new HttpEntity<>(consentObj);
         System.out.println(consentEntity);
         ResponseEntity<Boolean> response = this.restTemplate.postForEntity(url, consentEntity, Boolean.class);
 
         if (Boolean.TRUE.equals(response.getBody()))
-            return new HttpEntity<OnHiuRequestBody>(new OnHiuRequestBody("Consent Request Success", hiuRequestBody.docSSID, hiuRequestBody.hiuSSID));
+            return new HttpEntity<OnHiuRequestBody>(new OnHiuRequestBody("Consent Request Success", consentObj.doctorSSID, consentObj.hiuSSID));
         else
-            return new HttpEntity<OnHiuRequestBody>(new OnHiuRequestBody("Consent Request Fail", hiuRequestBody.docSSID, hiuRequestBody.hiuSSID));
+            return new HttpEntity<OnHiuRequestBody>(new OnHiuRequestBody("Consent Request Fail", consentObj.doctorSSID, consentObj.hiuSSID));
 
     }
 
@@ -202,15 +197,17 @@ public class RequestController {
                 OnHipRequestBody.class);
 
         // notify
-//        return new OnHipRequestBody("Request Placed");
+
         return new HttpEntity<OnHipRequestBody>(Objects.requireNonNull(sr_re.getBody()));
-//>>>>>>> 97a42a60e0194b7840564736af085be8435ce9eb
+
     }
+
+
 
     // the gateway service can request cm to verify the user pin to approve the consent
     @PostMapping("/approveConsent")
     public HttpEntity<ApproveConsentResponse> verifyConsentGateway(@RequestBody ApproveConsentBody approveConsentBody,Authentication authentication){
-//>>>>>>> 97a42a60e0194b7840564736af085be8435ce9eb
+
         // Check if all fields are filled and valid
         String ssid= authentication.getName();
         System.out.println(ssid);
@@ -225,14 +222,9 @@ public class RequestController {
      //   validity = validity && this.requestService.checkToApproveConsentFields(consentObj);
     //    validity = validity && (Objects.equals(ssid, approveConsentBody.consentObj.patientSSID));
 
-
         if (!validity){
             // fields invalid
-//<<<<<<< HEAD
-//            return new ApproveConsentResponse("Invalid SSID");
-//=======
             return  new HttpEntity<ApproveConsentResponse>(new ApproveConsentResponse("Invalid SSID"));
-//>>>>>>> 97a42a60e0194b7840564736af085be8435ce9eb
         }
 
         // Call /cm/consents/approveConsent
@@ -243,41 +235,50 @@ public class RequestController {
         ResponseEntity<OnApproveConsentBody> re = this.restTemplate.postForEntity(url, consentEntity,
                 OnApproveConsentBody.class);
 
-        // If verified place send request to hip
-        // call /gateway/request/hip/sendRequest
-        // notify
-        System.out.println(re.getBody().response);
-   //     if (Objects.requireNonNull(re.getBody()).response.equals("Approved")){
 
-//            // If verified place send request to hip
-//            // call /gateway/request/hip/sendRequest
-//            url = "http://localhost:9005/gateway/request/hip/sendRequest";
-////<<
-//            HipRequestBody hipRequestBody = new HipRequestBody(re.getBody().consentObj,
-//                    this.requestService.getHiuLink(re.getBody().consentObj.hiuSSID));
-//            HttpEntity<HipRequestBody> hrbEntity = new HttpEntity<HipRequestBody>(hipRequestBody);
-//            ResponseEntity<OnHipRequestBody> sr_re = this.restTemplate.postForEntity(url, hrbEntity,
-//                    OnHipRequestBody.class);
-//
-//            if(Objects.equals(Objects.requireNonNull(sr_re.getBody()).response, "Request Sent"))
-//                return new HttpEntity<ApproveConsentResponse>(new ApproveConsentResponse("Consent Approved. Request placed."));
-//            else
-//                return  new HttpEntity<ApproveConsentResponse>(new ApproveConsentResponse("Consent Approved. Request " +
-//                        "failed."));
-//        }
-//        else
-            return  new HttpEntity<ApproveConsentResponse>(new ApproveConsentResponse("done"));
-//>>
+        System.out.println(re.getBody().response);
+        if (Objects.requireNonNull(re.getBody()).response.equals("Approved")){
+
+            // If verified place send request to hip
+            // ask the HIP to send the data asked by HIU .. also send consent object along .
+
+            //find the url of hip , by using its ssid .
+            System.out.println(re.getBody().consentObj.hipSSID);
+            System.out.println(approveConsentBody.consentObj.hipSSID);
+            url = this.requestService.getHipLink(re.getBody().consentObj.hipSSID)+"hospital/requests/hip/sendRequest";   // get url of hip
+
+
+
+            HipRequestBody hipRequestBody = new HipRequestBody(re.getBody().consentObj,
+                    this.requestService.getDataPostLink(re.getBody().consentObj.hiuSSID));// provide consent obj to hip along with call back url .
+
+            HttpEntity<HipRequestBody> hrbEntity = new HttpEntity<HipRequestBody>(hipRequestBody);
+    //            ResponseEntity<OnHipRequestBody> sr_re = this.restTemplate.postForEntity(url, hrbEntity,
+    //                    OnHipRequestBody.class);
+
+            System.out.println(url);
+             ResponseEntity<String> sr_re = this.restTemplate.postForEntity(url,
+                     hrbEntity,
+                     String.class);
+
+             System.out.println("reached HERE");
+
+                 if(Objects.equals(Objects.requireNonNull(sr_re.getBody()), "data sent"))
+                return new HttpEntity<ApproveConsentResponse>(new ApproveConsentResponse("Consent Approved. Request placed."));
+            else
+                return  new HttpEntity<ApproveConsentResponse>(new ApproveConsentResponse("Consent Approved. Request " +
+                        "failed."));
+        }
+
+        return  new HttpEntity<ApproveConsentResponse>(new ApproveConsentResponse("done"));
+
 
     }
 
     // the gateway service can request cm to verify the consent object
     @PostMapping("/verifyConsent")
-//<<<<<<< HEAD
-//    public VerifyConsentResponse verifyConsentGateway(@RequestBody VerifyConsentBody verifyConsentBody){
-//=======
     public HttpEntity<VerifyConsentResponse> verifyConsentGateway(@RequestBody VerifyConsentBody verifyConsentBody){
-//>>>>>>> 97a42a60e0194b7840564736af085be8435ce9eb
+
         // Check if all fields are filled and valid
         String reqSSID = verifyConsentBody.reqSSID;
 
@@ -291,14 +292,11 @@ public class RequestController {
         }
 
         if (!validity){
-//<<<<<<< HEAD
-//            return new VerifyConsentResponse("Invalid SSID");
-//=======
             return new HttpEntity<VerifyConsentResponse>(new VerifyConsentResponse("Invalid SSID"));
-//>>>>>>> 97a42a60e0194b7840564736af085be8435ce9eb
+
         }
 
-        String url = "http://localhost:8999/cm/consents/verifyConsent";
+        String url = "http://localhost:9006/cm/consents/verifyConsent";
         HttpEntity<VerifyConsentBody> consentEntity = new HttpEntity<>(verifyConsentBody);
         ResponseEntity<OnVerifyConsentBody> re = this.restTemplate.postForEntity(url, consentEntity,
                 OnVerifyConsentBody.class);
@@ -308,13 +306,10 @@ public class RequestController {
 
         return new HttpEntity<VerifyConsentResponse>(new VerifyConsentResponse(Objects.requireNonNull(re.getBody()).response));
 
-
     }
 
     // Patient can request their active consents
     @PostMapping("/fetchConsents")
-
-
     public HttpEntity<OnFetchConsentsResponse> fetchConsents( Authentication authentication){
         // Check patientSSID
         String ssid= authentication.getName();
@@ -330,7 +325,7 @@ public class RequestController {
                     new ArrayList<>()));
         }
 
-        String url = "http://localhost:8999/cm/consents/fetchConsents";
+        String url = "http://localhost:9006/cm/consents/fetchConsents";
 
         PatientSSIDBody patientSSIDBody=new PatientSSIDBody(ssid);
 
@@ -377,10 +372,6 @@ public class RequestController {
         // notify
     }
 
-    // Notification
-//    @PostMapping("/notify")
-//    public void notify(String notiType, JSONObject[] jsonObjs){
-//        // Check type of notification and respond accordingly
-//    }
+
 
 }

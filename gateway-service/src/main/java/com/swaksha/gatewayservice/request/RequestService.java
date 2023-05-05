@@ -1,22 +1,26 @@
 package com.swaksha.gatewayservice.request;
 
 import com.swaksha.gatewayservice.entity.Doctor;
-import com.swaksha.gatewayservice.entity.HiuUrl;
 import com.swaksha.gatewayservice.entity.Hospital;
+import com.swaksha.gatewayservice.entity.HospitalUrl;
 import com.swaksha.gatewayservice.entity.Patient;
 import com.swaksha.gatewayservice.repository.DoctorRepo;
-import com.swaksha.gatewayservice.repository.HiuUrlRepo;
+import com.swaksha.gatewayservice.repository.HospitalUrlRepo;
 
 import com.swaksha.gatewayservice.repository.HospitalRepo;
 import com.swaksha.gatewayservice.repository.PatientRepo;
 import io.swagger.v3.oas.annotations.servers.Server;
+import jakarta.validation.constraints.Null;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.ObjectUtils;
+import org.apache.http.util.NetUtils;
 import org.springframework.security.core.Authentication;
 
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @Component
@@ -26,8 +30,7 @@ public class RequestService {
     private final PatientRepo patientRepo;
     private final DoctorRepo doctorRepo;
     private final HospitalRepo hospitalRepo;
-    private final HiuUrlRepo hiuUrlRepo;
-
+    private final HospitalUrlRepo hospitalUrlRepo;
 
 
     public boolean validateSSID(String SSID) {
@@ -75,7 +78,7 @@ public class RequestService {
     }
 
     public boolean saveHiuLink(String hiuSSID, String dataPostUrl) {
-        HiuUrl hiuUrl = this.hiuUrlRepo.save(new HiuUrl(hiuSSID, dataPostUrl));
+        HospitalUrl hiuUrl = this.hospitalUrlRepo.save(new HospitalUrl(hiuSSID, dataPostUrl));
 
         if(hiuUrl == null){
             return false;
@@ -84,13 +87,19 @@ public class RequestService {
         return true;
     }
 
-    public String getHiuLink(String hiuSSID) {
-        ArrayList<HiuUrl> urls = (ArrayList<HiuUrl>) this.hiuUrlRepo.findByHiuSsid(hiuSSID);
+    public String getHipLink(String hipSSID) {
+        HospitalUrl url =  this.hospitalUrlRepo.findByHospitalSsid(hipSSID);
+        System.out.println("i have come here");
+        System.out.println(hipSSID);
+        System.out.println(url);
+        if(url==null)return "invalid ssid";
+        return url.getHospitalUrl();
+    }
 
-        if(urls.size()<1){
-            return "invalid url";
-        }
-
-        return urls.get(0).getHiuUrl();
+    public String getDataPostLink(String hiuSSID){
+        List<Hospital> hospital=this.hospitalRepo.findBySsid(hiuSSID);
+        String url=hospital.get(0).getDataPostUrl();
+        if(url==null)return "invalid ssid";
+        return url;
     }
 }

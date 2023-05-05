@@ -40,6 +40,7 @@ public class RegisterRequest {
 
     private String cmPinPassword;
 
+    private String url;
 
 
 

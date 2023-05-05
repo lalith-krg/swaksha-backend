@@ -5,7 +5,7 @@ spring:
   application:
     name: HOSPITAL-SERVICE
   datasource:
-    url: jdbc:mysql://localhost:3306/Swaksha
+    url: jdbc:mysql://localhost:3306/HospitalA
     username: root
     password: root
 
@@ -13,11 +13,3 @@ spring:
     hibernate:
       ddl-auto: update
 
-eureka:
-  client:
-    register-with-eureka: true
-    fetch-registry: true
-    service-url:
-      defaultZone: http://localhost:9000/eureka
-    instance:
-      hostname: localhost

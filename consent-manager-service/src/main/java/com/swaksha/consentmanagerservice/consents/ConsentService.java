@@ -28,6 +28,7 @@ public class ConsentService {
         // search consent object by consent ID
         Consent consent = searchConsentObjWithConsentID(consentObj.getConsentID());
 
+
         printConsent(consent);
 
         // check every field in consent object
@@ -83,7 +84,7 @@ public class ConsentService {
         }
 
         consentObj.setApproved(true);
-        consentObj.setConsentApprovedDate(LocalDate.now());
+//        consentObj.setConsentApprovedDate(LocalDate.now());
 
         // add the new consentObj to records
         boolean res = addNewConsentObj(consentObj);
@@ -116,7 +117,7 @@ public class ConsentService {
         if(consents.size()<1){
             return blankConsent();
         }
-
+        System.out.println("reached here");
         Consent consent = consents.get(0);
 
         if (consent == null)

@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface HospitalRepo extends JpaRepository<Hospital, String> {
     List<Hospital> findBySsid(String ssid);
+
 }

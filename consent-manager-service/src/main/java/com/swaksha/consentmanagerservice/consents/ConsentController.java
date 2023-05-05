@@ -60,7 +60,7 @@ public class ConsentController {
 
         // Respond to /gateway/request/onApproveConsent
 
-        String returnUrl = "http://localhost:9005/gateway/request/onApproveConsent";
+        System.out.println("consent object-");
         System.out.println(re.getBody());
 
         if(!re.getBody()){
@@ -90,7 +90,7 @@ public class ConsentController {
         boolean validity = this.consentService.verifyConsent(consentOf(verifyConsentBody.consentObj));
 
         // Respond to /gateway/request/onVerifyConsent
-        String returnUrl = "http://localhost:8999/gateway/request/onVerifyConsent";
+        String returnUrl = "http://localhost:9005/gateway/request/onVerifyConsent";
 
         if(!validity) {
             HttpEntity<OnVerifyConsentBody> verifyEntity = new HttpEntity<>(new OnVerifyConsentBody(

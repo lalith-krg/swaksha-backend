@@ -1,18 +1,15 @@
 package com.swaksha.gatewayservice.auth;
 
-import com.swaksha.gatewayservice.entity.Role;
+import com.swaksha.gatewayservice.entity.*;
 
 import com.swaksha.gatewayservice.repository.APIRepo;
+import com.swaksha.gatewayservice.repository.HospitalUrlRepo;
 import com.swaksha.gatewayservice.repository.PatientCredRepo;
 import com.swaksha.gatewayservice.repository.PatientRepo;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.swaksha.gatewayservice.entity.ApiKeys;
-
-import com.swaksha.gatewayservice.entity.Patient;
-import com.swaksha.gatewayservice.entity.PatientCred;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -41,7 +38,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
-
+    private final HospitalUrlRepo hospitalUrlRepo;
     private final APIRepo arepository;
 
 
@@ -79,6 +76,8 @@ public class AuthService {
                 .cmPinPassword(request.getCmPinPassword())
                 .email(request.getEmail()).build();
         prepository.save(user1);
+
+
         return AuthResponse.builder().
                 token(jwtToken)
                 .ssid(id)
