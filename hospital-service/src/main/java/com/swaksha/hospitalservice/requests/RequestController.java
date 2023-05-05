@@ -67,8 +67,6 @@ public class RequestController {
     @PostMapping("/newRequest")
     public HttpEntity<OnHiuRequestBody> hiuRequest(@RequestBody HiuRequestBody hiuPlaceRequest, Authentication authentication) {
 
-        // get ssid of hospital from API key .
-        // get dataposturl from hospital itself as input .
 
         String ssid= authentication.getName();
 //        System.out.println(hiuPlaceRequest.docSSID);
@@ -79,6 +77,7 @@ public class RequestController {
 
         HiuRequestBody newHiuRequestBody=new HiuRequestBody(hiuPlaceRequest.hipSSID,hiuPlaceRequest.patientSSID,ssid);
         HttpEntity<HiuRequestBody> reqEntity = new HttpEntity<>(newHiuRequestBody);
+        //set API key in header .
 
         ResponseEntity<OnHiuRequestBody> ohr = this.restTemplate.postForEntity(url, reqEntity, OnHiuRequestBody.class);
 
@@ -106,7 +105,6 @@ public class RequestController {
         for(int i=0;i<ehrData.size();i++){
             System.out.println(ehrData.get(i).patientSSID);
             System.out.println(ehrData.get(i).data);
-
             Ehr ehr=new Ehr();
             ehr.setData(ehrData.get(i).data);
             ehr.setPatient(patient);

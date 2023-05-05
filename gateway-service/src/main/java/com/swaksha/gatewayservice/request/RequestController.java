@@ -70,8 +70,6 @@ public class RequestController {
 
     // HIU places request for data
     @PostMapping("/hiu/request")
-
-
     public HttpEntity<OnHiuRequestBody> hiuRequest(@RequestBody HiuRequestBody hiuRequestBody){
 
         System.out.println("hehe boi");
