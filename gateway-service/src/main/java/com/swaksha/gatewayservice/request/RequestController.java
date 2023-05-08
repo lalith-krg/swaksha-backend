@@ -37,7 +37,7 @@ public class RequestController {
                       LocalDate consentEndDate, String consentID, boolean selfConsent, boolean isApproved){}
 
 
-    record HiuRequestBody(String doctorSSID, String hiuSSID, String patientSSID,String hipSsid){}
+    record HiuRequestBody(String doctorSSID, String hiuSSID, String patientSSID,String hipSSID){}
 
     record OnHiuRequestBody(String response, String docSSID, String hiuSSID){}
 
@@ -82,6 +82,8 @@ public class RequestController {
         System.out.println(hiuRequestBody.hiuSSID);
         System.out.println("PatientSSID");
         System.out.println(hiuRequestBody.patientSSID);
+        System.out.println("hip ssid");
+        System.out.println(hiuRequestBody.hipSSID);
 
         boolean validity = this.requestService.validateSSID(hiuRequestBody.doctorSSID);
 
@@ -106,7 +108,7 @@ public class RequestController {
     //    boolean saved = this.requestService.saveHiuLink(hipRequestBody.consentObj.hiuSSID, hipRequestBody.dataPostUrl);
 
         //hiu ssid must be extracted from API key .
-        ConsentObj consentObj = new ConsentObj(hiuRequestBody.doctorSSID,"123456789",hiuRequestBody.patientSSID,hiuRequestBody.hipSsid,null,null,null,null,null,null,false,false);
+        ConsentObj consentObj = new ConsentObj(hiuRequestBody.doctorSSID,"123456789",hiuRequestBody.patientSSID,hiuRequestBody.hipSSID,null,null,null,null,null,null,false,false);
 
 
 
@@ -243,7 +245,7 @@ public class RequestController {
             //find the url of hip , by using its ssid .
             System.out.println(re.getBody().consentObj.hipSSID);
             System.out.println(approveConsentBody.consentObj.hipSSID);
-            url = this.requestService.getHipLink(re.getBody().consentObj.hipSSID)+"hospital/requests/hip/sendRequest";   // get url of hip
+            url = this.requestService.getHipLink(re.getBody().consentObj.hipSSID)+"/hospital/requests/hip/sendRequest";   // get url of hip
 
 
 

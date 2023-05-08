@@ -74,6 +74,7 @@ public class RequestController {
         // call /gateway/request/hiu/request
         String url = "http://localhost:9005/gateway/request/hiu/request";
 
+        System.out.println(hiuPlaceRequest.hipSSID);
 
         HiuRequestBody newHiuRequestBody=new HiuRequestBody(hiuPlaceRequest.hipSSID,hiuPlaceRequest.patientSSID,ssid);
         HttpEntity<HiuRequestBody> reqEntity = new HttpEntity<>(newHiuRequestBody);
