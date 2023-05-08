@@ -29,29 +29,29 @@ public class AuthService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
-    public static String generateRandom(int length) {
-        Random random = new Random();
-        char[] digits = new char[length];
-        digits[0] = (char) (random.nextInt(9) + '1');
-        for (int i = 1; i < length; i++) {
-            digits[i] = (char) (random.nextInt(10) + '0');
-        }
-        String res=new String(digits);
-        return res;
-    }
+//    public static String generateRandom(int length) {
+//        Random random = new Random();
+//        char[] digits = new char[length];
+//        digits[0] = (char) (random.nextInt(9) + '1');
+//        for (int i = 1; i < length; i++) {
+//            digits[i] = (char) (random.nextInt(10) + '0');
+//        }
+//        String res=new String(digits);
+//        return res;
+//    }
     public AuthResponse register(RegisterRequest request) {
 
         
-        String id=generateRandom(12);
+    //    String id=generateRandom(12);
         var user= DoctorCred.builder().
-                 ssid(id)
+                 ssid(request.getSsid())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .build();
         doctorCredRepo.save(user);
         var jwtToken=jwtService.generateToken(user);
 
         var user1=Doctor.builder().
-                ssid(id)
+                ssid(request.getSsid())
                 .address(request.getAddress())
                 .phone_number(request.getPhone_number())
                 .city(request.getCity())
@@ -63,7 +63,7 @@ public class AuthService {
         doctorRepo.save(user1);
         return AuthResponse.builder().
                 token(jwtToken)
-                .ssid(id)
+                .ssid(request.getSsid())
                 .build();
     }
 
