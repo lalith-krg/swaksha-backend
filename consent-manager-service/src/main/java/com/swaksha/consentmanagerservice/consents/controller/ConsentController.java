@@ -1,6 +1,8 @@
-package com.swaksha.consentmanagerservice.consents;
+package com.swaksha.consentmanagerservice.consents.controller;
 
-import com.swaksha.consentmanagerservice.entity.Consent;
+import com.swaksha.consentmanagerservice.consents.entity.Consent;
+import com.swaksha.consentmanagerservice.consents.service.ConsentService;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
@@ -30,17 +32,11 @@ public class ConsentController {
                       LocalDate consentEndDate, String consentID, boolean selfConsent, boolean isApproved){
     }
     public record ApproveConsentBody(String patientSSID, String encPin, ConsentObj consentObj){}
-
     public record VerifyConsentBody(String reqSSID, ConsentObj consentObj){}
-
     public record OnApproveConsentBody(String response, ConsentObj consentObj){}
-
     public record OnVerifyConsentBody(String response, String reqSSID, ConsentObj consentObj){}
-
     public record OnFetchConsentsBody(String SSID, ArrayList<ConsentObj> consentObjs){}
-
     public record PinToVerifyBody(String SSID, String encPin){}
-
     public record PatientSSIDBody(String patientSSID){}
 
     // the gateway service can verify the user pin to approve the consent
@@ -50,8 +46,6 @@ public class ConsentController {
         // call /cm/patient/auth/verifyPin
 
         String url = "http://localhost:9006/cm/patient/auth/verifyPin";
-//        System.out.println(approveConsentBody.patientSSID);
-//        System.out.println(approveConsentBody.encPin);
 
         HttpEntity<PinToVerifyBody> entity = new HttpEntity<>(new PinToVerifyBody(
                 approveConsentBody.patientSSID, approveConsentBody.encPin
@@ -67,8 +61,6 @@ public class ConsentController {
             HttpEntity<OnApproveConsentBody> approveEntity = new HttpEntity<>(new OnApproveConsentBody(
                     "Rejected", approveConsentBody.consentObj
             ));
-            // this.restTemplate.postForEntity(returnUrl, approveEntity, Boolean.class);
-            // return;
             return approveEntity;
         }
 
@@ -79,7 +71,6 @@ public class ConsentController {
         HttpEntity<OnApproveConsentBody> approveEntity = new HttpEntity<>(new OnApproveConsentBody(
                 "Approved", consentObj
         ));
-        // this.restTemplate.postForEntity(returnUrl, approveEntity, Boolean.class);
         return approveEntity;
     }
 
