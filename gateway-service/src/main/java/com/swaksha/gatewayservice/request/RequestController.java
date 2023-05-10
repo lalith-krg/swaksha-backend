@@ -1,6 +1,8 @@
 package com.swaksha.gatewayservice.request;
 
 
+import com.swaksha.gatewayservice.firebase.controller.NotificationController;
+import com.swaksha.gatewayservice.firebase.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.json.JSONObject;
@@ -13,10 +15,7 @@ import org.springframework.security.core.Authentication;
 
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 
@@ -27,7 +26,7 @@ import java.util.Objects;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/gateway/request")
-
+@CrossOrigin(origins= {"*"})
 
 public class RequestController {
 
@@ -75,6 +74,13 @@ public class RequestController {
     public record PatientSSIDBody(String patientSSID){}
 
     // HIU places request for data
+    record Notification(String token, String title, String body){}
+    private final NotificationService notificationService;
+
+    @PostMapping("/send")
+    public void notif(@RequestBody Notification notification){
+        this.notificationService.sendNotification(notification.token, notification.title, notification.body);
+    }
 
     @PostMapping("/hiu/request")
     public HttpEntity<OnHiuRequestBody> hiuRequest(@RequestBody HiuRequestBody hiuRequestBody){

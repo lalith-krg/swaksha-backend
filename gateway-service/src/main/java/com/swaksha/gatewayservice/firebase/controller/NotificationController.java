@@ -19,7 +19,7 @@ public class NotificationController {
 
     @PostMapping("/send")
     public void sendNotificationController(@RequestBody Notification notification){
-        this.notificationService.sendNotification(notification.token, notification.title, notification.body);
+//        this.notificationService.sendNotification(notification.token, notification.title, notification.body);
         System.out.println("Hello");
     }
 }
