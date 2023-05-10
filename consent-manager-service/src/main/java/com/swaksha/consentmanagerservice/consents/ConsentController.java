@@ -39,6 +39,7 @@ public class ConsentController {
     public record OnFetchConsentsBody(String SSID, ArrayList<ConsentObj> consentObjs){}
     public record PinToVerifyBody(String SSID, String encPin){}
     public record PatientSSIDBody(String patientSSID){}
+    public record ConsentIdBody(String consentId){}
 
 
     @PostMapping("/approveConsent")
@@ -152,6 +153,14 @@ public class ConsentController {
         System.out.println(consentObj.patientSSID);
 
         return this.consentService.addPendingConsent(consentOf(consentObj));
+    }
+
+    @PostMapping("fetchConsentById")
+    public HttpEntity<ConsentObj> fetchByConsentId(@RequestBody ConsentIdBody consentIdBody){
+        // search for consents associated with SSID
+        ConsentObj consentObj = cObjOf(this.consentService.searchConsentObjWithConsentID(consentIdBody.consentId));
+
+        return new HttpEntity<>(consentObj);
     }
 
 

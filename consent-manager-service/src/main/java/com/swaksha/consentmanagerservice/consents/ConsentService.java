@@ -94,7 +94,7 @@ public class ConsentService {
         return consents;
     }
 
-    private Consent searchConsentObjWithConsentID(String consentID){
+    public Consent searchConsentObjWithConsentID(String consentID){
         ArrayList<Consent> consents = (ArrayList<Consent>) this.consentRepo.findByConsentID(consentID);
 
         if(consents.size()<1){
