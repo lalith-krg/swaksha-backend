@@ -28,8 +28,8 @@ public class PatientController {
     private RestOperations restTemplate;
 
     record ConsentObj(String doctorSSID, String hiuSSID, String patientSSID, String hipSSID,
-                      LocalDate dataAccessStartDate, LocalDate dataAccessEndDate,
-                      LocalDate requestInitiatedDate, LocalDate consentApprovedDate,
+                      String dataAccessStartDate, String dataAccessEndDate,
+                      String requestInitiatedDate, String consentApprovedDate,
                       LocalDate consentEndDate, String consentID, boolean selfConsent, boolean isApproved){}
 
 

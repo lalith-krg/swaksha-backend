@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 @Service
@@ -25,16 +26,18 @@ public class RequestService {
     private RequestController.ConsentObj cObjOf(Consent consent){
         return new RequestController.ConsentObj(consent.getDoctorSSID(),
                 consent.getHiuSSID(), consent.getPatientSSID(), consent.getHipSSID(),
-                consent.getDataAccessStartDate(), consent.getDataAccessEndDate(),
-                consent.getRequestInitiatedDate(), consent.getConsentApprovedDate(), consent.getConsentEndDate(),
+                String.valueOf(consent.getDataAccessStartDate()), String.valueOf(consent.getDataAccessEndDate()),
+                String.valueOf(consent.getRequestInitiatedDate()), String.valueOf(consent.getConsentApprovedDate()), String.valueOf(consent.getConsentEndDate()),
                 consent.getConsentID(), consent.isSelfConsent(), consent.isApproved());
     }
 
+
+
     private Consent consentOf(RequestController.ConsentObj consentObj){
-        return new Consent(consentObj.consentID(), consentObj.consentEndDate(), consentObj.isApproved(),
+        return new Consent(consentObj.consentID(), LocalDate.parse(consentObj.consentEndDate()), consentObj.isApproved(),
                 consentObj.selfConsent(),
                 consentObj.doctorSSID(), consentObj.hiuSSID(), consentObj.patientSSID(), consentObj.hipSSID(),
-                consentObj.dataAccessStartDate(), consentObj.dataAccessEndDate(), consentObj.requestInitiatedDate(),
-                consentObj.consentApprovedDate());
+                LocalDate.parse(consentObj.dataAccessStartDate()), LocalDate.parse(consentObj.dataAccessEndDate()), LocalDate.parse(consentObj.requestInitiatedDate()),
+                LocalDate.parse(consentObj.consentApprovedDate()));
     }
 }

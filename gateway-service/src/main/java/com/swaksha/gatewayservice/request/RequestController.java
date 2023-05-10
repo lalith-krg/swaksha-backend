@@ -3,15 +3,16 @@ package com.swaksha.gatewayservice.request;
 <<<<<<< HEAD
 import com.swaksha.gatewayservice.entity.HospitalUrl;
 import com.swaksha.gatewayservice.repository.HospitalUrlRepo;
-<<<<<<< HEAD
 import lombok.Getter;
 =======
 >>>>>>> 89609882fdadcebc982da29b41d2e01d4c082bc8
-=======
->>>>>>> parent of 92b7eaa... date fixes
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import org.json.JSONObject;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.cglib.core.Local;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 
@@ -32,6 +33,7 @@ import java.util.Objects;
 @RequiredArgsConstructor
 @RequestMapping("/gateway/request")
 
+
 public class RequestController {
 
     private final RequestService requestService;
@@ -39,9 +41,9 @@ public class RequestController {
     private RestTemplate restTemplate = new RestTemplateBuilder().build();
 
     record ConsentObj(String doctorSSID, String hiuSSID, String patientSSID, String hipSSID,
-                      LocalDate dataAccessStartDate, LocalDate dataAccessEndDate,
-                      LocalDate requestInitiatedDate, LocalDate consentApprovedDate,
-                      LocalDate consentEndDate, String consentID, boolean selfConsent, boolean isApproved){}
+                      String dataAccessStartDate, String dataAccessEndDate,
+                      String requestInitiatedDate, String consentApprovedDate,
+                      String consentEndDate, String consentID, boolean selfConsent, boolean isApproved){}
 
 
     record HiuRequestBody(String doctorSSID, String hiuSSID, String patientSSID,String hipSSID){}
@@ -55,6 +57,11 @@ public class RequestController {
     record HiuRequestWithConsentBody(String docSSID, String hiuSSID, String patientSSID, ConsentObj consentObj, String dataPostUrl){}
 
     record ApproveConsentBody(String patientSSID, String encPin, ConsentObj consentObj){}
+
+    record ConsentObj1(String doctorSSID, String hiuSSID, String patientSSID, String hipSSID,
+                       String dataAccessStartDate, String dataAccessEndDate,
+                       String requestInitiatedDate, String consentApprovedDate,
+                       String consentEndDate, String consentID, boolean selfConsent, boolean isApproved){}
 
     record ApproveConsentResponse(String response){}
 
@@ -73,6 +80,7 @@ public class RequestController {
     public record PatientSSIDBody(String patientSSID){}
 
     // HIU places request for data
+
     @PostMapping("/hiu/request")
     public HttpEntity<OnHiuRequestBody> hiuRequest(@RequestBody HiuRequestBody hiuRequestBody){
 
@@ -215,6 +223,8 @@ public class RequestController {
         // Check if all fields are filled and valid
         String ssid= authentication.getName();
         System.out.println(ssid);
+        System.out.println(approveConsentBody.consentObj.dataAccessStartDate);
+        System.out.println(approveConsentBody.consentObj.dataAccessEndDate);
         System.out.println(approveConsentBody.consentObj.consentID);
         ConsentObj consentObj=new ConsentObj(approveConsentBody.consentObj.doctorSSID,
                 approveConsentBody.consentObj.hiuSSID, ssid, approveConsentBody.consentObj.hipSSID,
@@ -230,13 +240,15 @@ public class RequestController {
             // fields invalid
             return  new HttpEntity<ApproveConsentResponse>(new ApproveConsentResponse("Invalid SSID"));
         }
+        System.out.println(approveConsentBody1.consentObj.dataAccessStartDate);
 
         // Call /cm/consents/approveConsent
-
+        String d= String.valueOf(approveConsentBody1.consentObj.dataAccessEndDate);
+        System.out.println(d);
         String url = "http://localhost:9006/cm/consents/approveConsent";
         HttpEntity<ApproveConsentBody> consentEntity = new HttpEntity<>(approveConsentBody1);
-
-        ResponseEntity<OnApproveConsentBody> re = this.restTemplate.postForEntity(url, consentEntity,
+        System.out.println(consentEntity.getBody().consentObj.dataAccessEndDate);
+        ResponseEntity<OnApproveConsentBody> re = this.restTemplate.exchange(url, HttpMethod.POST,consentEntity,
                 OnApproveConsentBody.class);
 
 
