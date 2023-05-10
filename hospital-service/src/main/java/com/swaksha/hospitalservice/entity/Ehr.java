@@ -25,7 +25,11 @@ public class Ehr {
     @Column
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     private LocalDate creationDate;
+=======
+    String data;
+>>>>>>> parent of 92b7eaa... date fixes
 =======
     String data;
 >>>>>>> parent of 92b7eaa... date fixes

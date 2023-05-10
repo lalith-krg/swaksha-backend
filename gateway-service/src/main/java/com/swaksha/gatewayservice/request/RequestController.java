@@ -1,14 +1,9 @@
 package com.swaksha.gatewayservice.request;
 
-<<<<<<< HEAD
+
 import com.swaksha.gatewayservice.entity.HospitalUrl;
 import com.swaksha.gatewayservice.repository.HospitalUrlRepo;
-<<<<<<< HEAD
-import lombok.Getter;
-=======
->>>>>>> 89609882fdadcebc982da29b41d2e01d4c082bc8
-=======
->>>>>>> parent of 92b7eaa... date fixes
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
