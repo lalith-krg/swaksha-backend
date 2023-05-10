@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface EhrRepo extends JpaRepository<Ehr, String> {
-    List<Ehr> findByPatientSsID(String ssid);
+    List<Ehr> findByPatientSsid(String ssid);
 }

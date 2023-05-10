@@ -20,13 +20,13 @@ import java.time.LocalDate;
 public class Ehr {
 
     @Id
-    String EhrId;
+    private String EhrId;
 
     @Column
-    LocalDate creationDate;
+    private LocalDate creationDate;
 
     @ManyToOne
-    Patient patient;
+    private Patient patient;
 
 //    @Column
 //    String data;

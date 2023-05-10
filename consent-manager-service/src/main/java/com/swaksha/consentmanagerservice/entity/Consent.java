@@ -5,7 +5,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.*;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -30,8 +29,10 @@ public class Consent {
 
     @Column
     private boolean selfConsent;
+
     @Column
     private String doctorSSID;
+
     @Column
     private String hiuSSID;
 

@@ -1,13 +1,13 @@
 package com.swaksha.consentmanagerservice.patient;
 
 import lombok.RequiredArgsConstructor;
-import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.swaksha.consentmanagerservice.patient.PatientService;
 
 @RestController
 @RequiredArgsConstructor
@@ -18,7 +18,6 @@ public class PatientController {
     private final PatientService patientService;
 
     record Account(String ssid, String phoneNum, String encPin){}
-
     record PinToVerifyBody(String SSID, String encPin){}
 
     // Create patient credentials
@@ -39,10 +38,9 @@ public class PatientController {
 
     // Confirm new PIN
     @PostMapping("/updateAccount")
-    public void updateAccount(@RequestBody Account account){
+    public boolean updateAccount(@RequestBody Account account){
         // Save new PIN
-        boolean updated = this.patientService.updateAccount(account.ssid(), account.phoneNum(),
-                account.encPin());
+        boolean updated = this.patientService.updateAccount(account.ssid(), account.phoneNum(), account.encPin());
+        return updated;
     }
-
 }

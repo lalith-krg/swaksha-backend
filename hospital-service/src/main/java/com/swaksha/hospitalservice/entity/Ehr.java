@@ -19,13 +19,16 @@ public class Ehr {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    Integer EhrId;
+    private Integer EhrId;
 
     @Column
-    LocalDate creationDate;
+    private LocalDate creationDate;
 
     @ManyToOne
-    Patient patient;
+    private Patient patient;
+
+    @Column
+    private String data;
 
 //    @Column
 //    String data;
@@ -48,6 +51,4 @@ public class Ehr {
     // EHR of type "procedure"
     @Column
     String procedureCode;
-    
-
 }
