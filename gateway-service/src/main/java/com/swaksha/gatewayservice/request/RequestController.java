@@ -283,6 +283,8 @@ public class RequestController {
             String hiuUrl = this.requestService.getHipLink(Objects.requireNonNull(co_entity.getBody()).hiuSSID) + "/hospital/requests/consentUpdate";
             ResponseEntity<Boolean> hiu_re = this.restTemplate.postForEntity(hiuUrl, co_entity, Boolean.class);
 
+            System.out.println("posted consent to hiu");
+
             // If verified place send request to hip
             // ask the HIP to send the data asked by HIU .. also send consent object along .
 
