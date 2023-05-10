@@ -1,17 +1,13 @@
 package com.swaksha.consentmanagerservice.consents;
 
 import com.swaksha.consentmanagerservice.entity.Consent;
-import com.swaksha.consentmanagerservice.consents.ConsentService;
 import com.swaksha.consentmanagerservice.patient.PatientService;
 
 
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 
 import org.springframework.http.HttpEntity;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -130,22 +126,22 @@ public class ConsentController {
 
     // patient can request to revoke consents form CM
     @PostMapping("/revokeConsent")
-    public boolean revokeConsents(@RequestBody ConsentObj consentObj){
+    public HttpEntity<ConsentObj> revokeConsents(@RequestBody ConsentObj consentObj){
         // search and erase consent object if exists
-        boolean revoked = this.consentService.revokeConsent(consentOf(consentObj));
+        ConsentObj revoked = cObjOf(this.consentService.revokeConsent(consentOf(consentObj)));
 
-        // return success or failure
-        return revoked;
+        // return new object
+        return new HttpEntity<>(revoked);
     }
 
     // reject Consent
     @PostMapping("/rejectConsent")
-    public boolean rejectConsent(@RequestBody ConsentObj consentObj){
+    public HttpEntity<Boolean> rejectConsent(@RequestBody ConsentObj consentObj){
         // search and erase consent object if exists
-        boolean revoked = this.consentService.revokeConsent(consentOf(consentObj));
+        boolean rejected = this.consentService.rejectConsent(consentOf(consentObj));
 
         // return success or failure
-        return revoked;
+        return new HttpEntity<>(rejected);
     }
 
     // add pending consents

@@ -126,9 +126,18 @@ public class ConsentService {
         return true;
     }
 
-    public boolean revokeConsent(Consent consentObj) {
-        this.consentRepo.delete(consentObj);
+    public Consent revokeConsent(Consent consent) {
+        Consent revokedConsent = new Consent(consent.getConsentID(), consent.getConsentEndDate(),
+                false, consent.isSelfConsent(),
+                consent.getDoctorSSID(), consent.getHiuSSID(), consent.getPatientSSID(), consent.getHipSSID(),
+                consent.getDataAccessStartDate(), consent.getDataAccessEndDate(),
+                consent.getRequestInitiatedDate(), consent.getConsentApprovedDate());
 
+        return this.consentRepo.save(revokedConsent);
+    }
+
+    public boolean rejectConsent(Consent consent) {
+        this.consentRepo.delete(consent);
         return true;
     }
 
