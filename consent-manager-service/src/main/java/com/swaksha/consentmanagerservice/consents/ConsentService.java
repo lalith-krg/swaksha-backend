@@ -1,7 +1,7 @@
-package com.swaksha.consentmanagerservice.consents.service;
+package com.swaksha.consentmanagerservice.consents;
 
-import com.swaksha.consentmanagerservice.consents.entity.Consent;
-import com.swaksha.consentmanagerservice.consents.repository.ConsentRepo;
+import com.swaksha.consentmanagerservice.entity.Consent;
+import com.swaksha.consentmanagerservice.repository.ConsentRepo;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,7 +82,7 @@ public class ConsentService {
 
         if(res){
             return consentObj;
-        }        
+        }
         return blankConsent();
     }
 

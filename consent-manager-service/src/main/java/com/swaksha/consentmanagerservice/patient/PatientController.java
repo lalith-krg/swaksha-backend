@@ -1,4 +1,4 @@
-package com.swaksha.consentmanagerservice.patientAuth.controller;
+package com.swaksha.consentmanagerservice.patient;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.swaksha.consentmanagerservice.patientAuth.service.PatientService;
+import com.swaksha.consentmanagerservice.patient.PatientService;
 
 @RestController
 @RequiredArgsConstructor

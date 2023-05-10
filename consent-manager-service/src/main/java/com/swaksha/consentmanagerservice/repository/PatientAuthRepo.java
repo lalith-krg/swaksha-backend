@@ -1,9 +1,9 @@
-package com.swaksha.consentmanagerservice.patientAuth.repository;
+package com.swaksha.consentmanagerservice.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.swaksha.consentmanagerservice.patientAuth.entity.PatientAuth;
+import com.swaksha.consentmanagerservice.entity.PatientAuth;
 
 import java.util.List;
 

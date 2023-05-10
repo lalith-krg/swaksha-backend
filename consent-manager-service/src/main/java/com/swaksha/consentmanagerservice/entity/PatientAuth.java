@@ -1,4 +1,4 @@
-package com.swaksha.consentmanagerservice.patientAuth.entity;
+package com.swaksha.consentmanagerservice.entity;
 
 import jakarta.persistence.*;
 import lombok.*;

@@ -1,4 +1,4 @@
-package com.swaksha.consentmanagerservice.consents.entity;
+package com.swaksha.consentmanagerservice.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -32,7 +32,7 @@ public class Consent {
 
     @Column
     private String doctorSSID;
-    
+
     @Column
     private String hiuSSID;
 

@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
+
 @Component
 @Entity
 @AllArgsConstructor
@@ -18,14 +20,15 @@ import org.springframework.stereotype.Component;
 public class Ehr {
 
     @Id
-    String EhrId;
+    private String EhrId;
 
 
     @ManyToOne
-    Patient patient;
+    private Patient patient;
 
     @Column
-    String data;
-    
+    private String data;
 
+    @Column
+    private LocalDate creationDate;
 }

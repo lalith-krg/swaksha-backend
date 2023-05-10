@@ -7,10 +7,10 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="gateway-service" />
         <module name="hospital-service (1)" />
         <module name="patient-service" />
         <module name="hospital-service (2)" />
+        <module name="gateway-service" />
         <module name="admin-service" />
         <module name="consent-manager-service" />
       </profile>

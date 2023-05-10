@@ -1,9 +1,9 @@
-package com.swaksha.consentmanagerservice.consents.repository;
+package com.swaksha.consentmanagerservice.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.swaksha.consentmanagerservice.consents.entity.Consent;
+import com.swaksha.consentmanagerservice.entity.Consent;
 
 import java.util.List;
 
