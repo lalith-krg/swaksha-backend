@@ -24,6 +24,6 @@ public class Ehr {
 
     @Column
     String data;
-    
+
 
 }

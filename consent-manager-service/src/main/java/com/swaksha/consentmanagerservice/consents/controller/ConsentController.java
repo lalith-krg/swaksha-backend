@@ -2,6 +2,7 @@ package com.swaksha.consentmanagerservice.consents.controller;
 
 import com.swaksha.consentmanagerservice.consents.entity.Consent;
 import com.swaksha.consentmanagerservice.consents.service.ConsentService;
+import com.swaksha.consentmanagerservice.patientAuth.service.PatientService;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -23,6 +24,7 @@ import java.util.ArrayList;
 public class ConsentController {
 
     private final ConsentService consentService;
+    private final PatientService patientService;
 
     private RestTemplate restTemplate = new RestTemplateBuilder().build();
 
@@ -45,19 +47,21 @@ public class ConsentController {
         // Verify that the patient pin is valid
         // call /cm/patient/auth/verifyPin
 
-        String url = "http://localhost:9006/cm/patient/auth/verifyPin";
+//        String url = "http://localhost:9006/cm/patient/auth/verifyPin";
+//
+//        HttpEntity<PinToVerifyBody> entity = new HttpEntity<>(new PinToVerifyBody(
+//                approveConsentBody.patientSSID, approveConsentBody.encPin
+//        ));
+//        ResponseEntity<Boolean> re = this.restTemplate.postForEntity(url, entity, Boolean.class);
 
-        HttpEntity<PinToVerifyBody> entity = new HttpEntity<>(new PinToVerifyBody(
-                approveConsentBody.patientSSID, approveConsentBody.encPin
-        ));
-        ResponseEntity<Boolean> re = this.restTemplate.postForEntity(url, entity, Boolean.class);
+        boolean re = this.patientService.verifyPin(approveConsentBody.patientSSID, approveConsentBody.encPin);
 
         // Respond to /gateway/request/onApproveConsent
 
         System.out.println("consent object-");
-        System.out.println(re.getBody());
+        System.out.println(re);
 
-        if(!re.getBody()){
+        if(!re){
             HttpEntity<OnApproveConsentBody> approveEntity = new HttpEntity<>(new OnApproveConsentBody(
                     "Rejected", approveConsentBody.consentObj
             ));

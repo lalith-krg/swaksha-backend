@@ -1,7 +1,5 @@
 package com.swaksha.gatewayservice.request;
 
-import com.swaksha.gatewayservice.entity.HospitalUrl;
-import com.swaksha.gatewayservice.repository.HospitalUrlRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
@@ -46,13 +44,10 @@ public class RequestController {
     record OnHipRequestBody(String response){}
 
     record HiuRequestWithConsentBody(String docSSID, String hiuSSID, String patientSSID, ConsentObj consentObj, String dataPostUrl){}
-//>>>>>>> 97a42a60e0194b7840564736af085be8435ce9eb
 
     record ApproveConsentBody(String patientSSID, String encPin, ConsentObj consentObj){}
 
     record ApproveConsentResponse(String response){}
-
-
 
     record VerifyConsentResponse(String response){}
 
