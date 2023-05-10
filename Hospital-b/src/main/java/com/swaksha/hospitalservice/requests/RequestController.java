@@ -32,9 +32,9 @@ public class RequestController {
 
     private final EhrRepo ehrRepo;
     public record ConsentObj(String doctorSSID, String hiuSSID, String patientSSID, String hipSSID,
-                             String dataAccessStartDate, String dataAccessEndDate,
-                             String requestInitiatedDate, String consentApprovedDate,
-                             String consentEndDate, String consentID, boolean selfConsent, boolean isApproved) {
+                             LocalDate dataAccessStartDate, LocalDate dataAccessEndDate,
+                             LocalDate requestInitiatedDate, LocalDate consentApprovedDate,
+                             LocalDate consentEndDate, String consentID, boolean selfConsent, boolean isApproved) {
     }
 
     record HiuPlaceRequest(String patientSSID){}
@@ -108,29 +108,18 @@ public class RequestController {
         VerifyConsentBody verifyConsentBody = new VerifyConsentBody(hipRequestBody.consentObj.hipSSID,
                 hipRequestBody.consentObj);
         HttpEntity<VerifyConsentBody> consentEntity = new HttpEntity<>(verifyConsentBody);
-        System.out.println(hipRequestBody.consentObj.patientSSID);
-        System.out.println(hipRequestBody.consentObj.dataAccessStartDate);
-        System.out.println(hipRequestBody.consentObj.dataAccessEndDate);
         ResponseEntity<VerifyConsentResponse> vc_re = this.restTemplate.postForEntity(url, consentEntity,
                 VerifyConsentResponse.class);
 
-
         // if verified send data
         if(Objects.equals(Objects.requireNonNull(vc_re.getBody()).response, "Verified")){
-             url= hipRequestBody.dataPostUrl();
-
-            List<Ehr> ehrData=ehrRepo.findByPatientSsIDAndCreationDateBetween(hipRequestBody.consentObj.patientSSID,LocalDate.parse(hipRequestBody.consentObj.dataAccessStartDate),LocalDate.parse(hipRequestBody.consentObj.dataAccessEndDate));
-            System.out.println(ehrData.size());
-            System.out.println(hipRequestBody.consentObj.patientSSID);
-            System.out.println(hipRequestBody.consentObj.dataAccessStartDate);
-            System.out.println(hipRequestBody.consentObj.dataAccessEndDate);
-         //   ehrData=ehrRepo
+            url= hipRequestBody.dataPostUrl();
+            List<Ehr> ehrData=ehrRepo.findByPatientSsID(hipRequestBody.consentObj.patientSSID);
             List<SendRequestedData> data=new ArrayList<>();
 
             for (Ehr ehrDatum : ehrData) {
                 SendRequestedData sendRequestedData = new SendRequestedData(ehrDatum.getData(), ehrDatum.getPatient().getSsID());
                 data.add(sendRequestedData);
-                System.out.println(ehrDatum.getData());
             }
 
             System.out.println(ehrData.get(0).getPatient().getSsID());

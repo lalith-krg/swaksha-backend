@@ -4,16 +4,11 @@ import com.swaksha.consentmanagerservice.consents.entity.Consent;
 import com.swaksha.consentmanagerservice.consents.service.ConsentService;
 import com.swaksha.consentmanagerservice.patientAuth.service.PatientService;
 
-<<<<<<< HEAD:consent-manager-service/src/main/java/com/swaksha/consentmanagerservice/consents/ConsentController.java
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.swaksha.consentmanagerservice.entity.Consent;
-import lombok.Getter;
-=======
->>>>>>> 89609882fdadcebc982da29b41d2e01d4c082bc8:consent-manager-service/src/main/java/com/swaksha/consentmanagerservice/consents/controller/ConsentController.java
+
+
+
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -37,9 +32,9 @@ public class ConsentController {
     private RestTemplate restTemplate = new RestTemplateBuilder().build();
 
     public record ConsentObj(String doctorSSID, String hiuSSID, String patientSSID, String hipSSID,
-                             LocalDate dataAccessStartDate, LocalDate dataAccessEndDate,
-                             LocalDate requestInitiatedDate, LocalDate consentApprovedDate,
-                             LocalDate consentEndDate, String consentID, boolean selfConsent, boolean isApproved){
+                      LocalDate dataAccessStartDate, LocalDate dataAccessEndDate,
+                      LocalDate requestInitiatedDate, LocalDate consentApprovedDate,
+                      LocalDate consentEndDate, String consentID, boolean selfConsent, boolean isApproved){
     }
     public record ApproveConsentBody(String patientSSID, String encPin, ConsentObj consentObj){}
     public record VerifyConsentBody(String reqSSID, ConsentObj consentObj){}
@@ -49,7 +44,7 @@ public class ConsentController {
     public record PinToVerifyBody(String SSID, String encPin){}
     public record PatientSSIDBody(String patientSSID){}
 
-
+    // the gateway service can verify the user pin to approve the consent
     @PostMapping("/approveConsent")
     public HttpEntity<OnApproveConsentBody> verifyConsentCM(@RequestBody ApproveConsentBody approveConsentBody){
         // Verify that the patient pin is valid

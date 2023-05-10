@@ -4,8 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDate;
-
 @Component
 @Entity
 @AllArgsConstructor
@@ -19,17 +17,18 @@ public class Ehr {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private  Integer EhrId;
+    Integer EhrId;
 
     @ManyToOne
-    private Patient patient;
-
-    @Column
-    private String data;
+    Patient patient;
 
     @Column
 <<<<<<< HEAD
+<<<<<<< HEAD
     private LocalDate creationDate;
+=======
+    String data;
+>>>>>>> parent of 92b7eaa... date fixes
     
 =======
     String data;

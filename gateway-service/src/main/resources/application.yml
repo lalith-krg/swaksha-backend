@@ -4,15 +4,13 @@ server:
 spring:
   application:
     name: GATEWAY-SERVICE
-  jackson:
-    serialization:
-      write-dates-as-timestamps: false
+
   config:
     import: optional:file:.env[.properties]
   datasource:
     url: jdbc:mysql://localhost:3306/Swaksha
     username: ${DB_USER:root}
-    password: ${DB_PASSWORD:root}
+    password: ${DB_PASSWORD:Tripathi}
 
   jpa:
     hibernate:

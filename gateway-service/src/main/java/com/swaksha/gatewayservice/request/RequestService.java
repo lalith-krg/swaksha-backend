@@ -71,8 +71,8 @@ public class RequestService {
         if(consentObj.consentEndDate() == null || consentObj.requestInitiatedDate() == null)
             return false;
 
-//        if(consentObj.requestInitiatedDate().isAfter(consentObj.consentEndDate()))
-//            validity = false;
+        if(consentObj.requestInitiatedDate().isAfter(consentObj.consentEndDate()))
+            validity = false;
 
         return validity;
     }
