@@ -4,6 +4,7 @@ import com.swaksha.hospitalservice.entity.Ehr;
 import com.swaksha.hospitalservice.entity.Patient;
 import com.swaksha.hospitalservice.repository.EhrRepo;
 import com.swaksha.hospitalservice.repository.PatientRepo;
+import jakarta.persistence.Column;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -41,7 +42,11 @@ public class RequestController {
     }
 
 
-    record EhrData(String data,String patientSSID){}
+//    record EhrData(String data,String patientSSID){}
+    record EhrData(LocalDate creationDate, String patientSSID,
+                   String type, String observationCode, String observationValue,
+                   String conditionCode, String procedureCode){
+    }
     record HiuPlaceRequestWithConsent(String docSSID, String patientSSID, String consentID){}
 
     record HiuRequestBody(String hipSSID,String patientSSID,String doctorSSID) {}
@@ -105,9 +110,16 @@ public class RequestController {
         Patient patient=patientRepo.findPatientBySsID(ehrData.get(0).patientSSID);
         for(int i=0;i<ehrData.size();i++){
             System.out.println(ehrData.get(i).patientSSID);
-            System.out.println(ehrData.get(i).data);
+//            System.out.println(ehrData.get(i).data);
             Ehr ehr=new Ehr();
-            ehr.setData(ehrData.get(i).data);
+//            ehr.setData(ehrData.get(i).data);
+            ehr.setCreationDate(ehrData.get(i).creationDate);
+            ehr.setType(ehrData.get(i).type);
+            ehr.setObservationCode(ehrData.get(i).observationCode);
+            ehr.setObservationValue(ehrData.get(i).observationValue);
+            ehr.setConditionCode(ehrData.get(i).conditionCode);
+            ehr.setProcedureCode(ehrData.get(i).procedureCode);
+
             ehr.setPatient(patient);
             ehrRepo.save(ehr);
         }

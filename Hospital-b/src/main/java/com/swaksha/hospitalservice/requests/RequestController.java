@@ -39,14 +39,17 @@ public class RequestController {
 
     record HiuPlaceRequest(String patientSSID){}
 
-    record SendRequestedData(String data,String patientSSID){}
+//    record SendRequestedData(String data,String patientSSID){}
+
+    record SendRequestedData(LocalDate creationDate, String patientSSID,
+                             String type, String observationCode, String observationValue,
+                             String conditionCode, String procedureCode){}
 
     record HiuPlaceRequestWithConsent(String docSSID, String patientSSID, String consentID){}
 
     record HiuRequestBody(String docSSID, String hiuSSID, String patientSSID, String dataPostUrl) {}
 
-    record HiuRequestWithConsent(String docSSID, String hiuSSID, String patientSSID, ConsentObj consentObj,
-                                 String dataPostUrl){}
+    record HiuRequestWithConsent(String docSSID, String hiuSSID, String patientSSID, ConsentObj consentObj, String dataPostUrl){}
 
     record OnHiuRequestBody(String response, String docSSID, String hiuSSID){}
 
@@ -118,7 +121,15 @@ public class RequestController {
             List<SendRequestedData> data=new ArrayList<>();
 
             for (Ehr ehrDatum : ehrData) {
-                SendRequestedData sendRequestedData = new SendRequestedData(ehrDatum.getData(), ehrDatum.getPatient().getSsID());
+//                SendRequestedData sendRequestedData = new SendRequestedData(ehrDatum.getData(), ehrDatum.getPatient().getSsID());
+                SendRequestedData sendRequestedData = new SendRequestedData(
+                        ehrDatum.getCreationDate(),
+                        ehrDatum.getPatient().getSsID(),
+                        ehrDatum.getType(),
+                        ehrDatum.getObservationCode(),
+                        ehrDatum.getObservationValue(),
+                        ehrDatum.getConditionCode(),
+                        ehrDatum.getProcedureCode());
                 data.add(sendRequestedData);
             }
 

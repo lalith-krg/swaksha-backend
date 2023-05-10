@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
+
 @Component
 @Entity
 @AllArgsConstructor
@@ -19,11 +21,33 @@ public class Ehr {
     @GeneratedValue(strategy = GenerationType.AUTO)
     Integer EhrId;
 
+    @Column
+    LocalDate creationDate;
+
     @ManyToOne
     Patient patient;
 
+//    @Column
+//    String data;
+
     @Column
-    String data;
+    String type;
+
+
+    // EHR of type "observation"
+    @Column
+    String observationCode;
+    @Column
+    String observationValue;
+
+
+    // EHR of type "condition"
+    @Column
+    String conditionCode;
+
+    // EHR of type "procedure"
+    @Column
+    String procedureCode;
     
 
 }
