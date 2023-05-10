@@ -6,6 +6,7 @@ import com.swaksha.consentmanagerservice.patientAuth.service.PatientService;
 
 
 
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
