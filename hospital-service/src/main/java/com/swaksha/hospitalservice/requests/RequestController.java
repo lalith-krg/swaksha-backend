@@ -102,7 +102,7 @@ public class RequestController {
     @PostMapping("/getRequestedData")
     public String storeRequestedData(@RequestBody List<EhrData> ehrData)
     {
-        Patient patient=patientRepo.findPatientBySsID(ehrData.get(0).patientSSID);
+        Patient patient=patientRepo.findPatientBySsid(ehrData.get(0).patientSSID);
         for(int i=0;i<ehrData.size();i++){
             System.out.println(ehrData.get(i).patientSSID);
             System.out.println(ehrData.get(i).data);
@@ -134,7 +134,7 @@ public class RequestController {
         // if verified send data
         if(Objects.equals(Objects.requireNonNull(vc_re.getBody()).response, "Verified")){
             url= hipRequestBody.dataPostUrl();
-            List<Ehr> ehrData=ehrRepo.findByPatientSsID(hipRequestBody.consentObj.patientSSID);
+            List<Ehr> ehrData=ehrRepo.findByPatientSsid(hipRequestBody.consentObj.patientSSID);
 
             ResponseEntity<String> response=this.restTemplate.postForEntity(url,ehrData,String.class);
             System.out.println(response.getBody());
