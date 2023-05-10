@@ -144,4 +144,10 @@ public class RequestController {
         }
     }
 
+    @PostMapping("/consentUpdate")
+    public HttpEntity<Boolean> consentUpdate(@RequestBody ConsentObj consentObj){
+        boolean update = this.requestService.save(consentObj);
+        return new HttpEntity<>(update);
+    }
+
 }

@@ -145,4 +145,9 @@ public class RequestController {
         return "data sent";
     }
 
+    @PostMapping("/consentUpdate")
+    public void consentUpdate(@RequestBody ConsentObj consentObj){
+        boolean update = this.requestService.save(consentObj);
+    }
+
 }

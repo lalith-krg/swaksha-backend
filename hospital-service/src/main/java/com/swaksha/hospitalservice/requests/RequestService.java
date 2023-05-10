@@ -21,6 +21,18 @@ public class RequestService {
         return cObjOf(consent);
     }
 
+    public boolean save(RequestController.ConsentObj consentObj) {
+        return updateConsentObj(consentOf(consentObj));
+    }
+
+    private boolean updateConsentObj(Consent consentObj){
+        Consent consent = this.consentRepo.save(consentObj);
+
+        if(consent == null){
+            return false;
+        }
+        return true;
+    }
 
     private RequestController.ConsentObj cObjOf(Consent consent){
         return new RequestController.ConsentObj(consent.getDoctorSSID(),
