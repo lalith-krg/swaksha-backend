@@ -1,8 +1,11 @@
 package com.swaksha.gatewayservice.request;
 
+<<<<<<< HEAD
 import com.swaksha.gatewayservice.entity.HospitalUrl;
 import com.swaksha.gatewayservice.repository.HospitalUrlRepo;
 import lombok.Getter;
+=======
+>>>>>>> 89609882fdadcebc982da29b41d2e01d4c082bc8
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.json.JSONObject;
@@ -52,7 +55,6 @@ public class RequestController {
     record OnHipRequestBody(String response){}
 
     record HiuRequestWithConsentBody(String docSSID, String hiuSSID, String patientSSID, ConsentObj consentObj, String dataPostUrl){}
-//>>>>>>> 97a42a60e0194b7840564736af085be8435ce9eb
 
     record ApproveConsentBody(String patientSSID, String encPin, ConsentObj consentObj){}
 
@@ -62,8 +64,6 @@ public class RequestController {
                        String consentEndDate, String consentID, boolean selfConsent, boolean isApproved){}
 
     record ApproveConsentResponse(String response){}
-
-
 
     record VerifyConsentResponse(String response){}
 

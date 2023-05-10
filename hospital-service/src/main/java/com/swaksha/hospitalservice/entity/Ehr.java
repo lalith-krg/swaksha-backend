@@ -28,7 +28,12 @@ public class Ehr {
     private String data;
 
     @Column
+<<<<<<< HEAD
     private LocalDate creationDate;
     
+=======
+    String data;
+
+>>>>>>> 89609882fdadcebc982da29b41d2e01d4c082bc8
 
 }

@@ -1,8 +1,15 @@
-package com.swaksha.consentmanagerservice.consents;
+package com.swaksha.consentmanagerservice.consents.controller;
 
+import com.swaksha.consentmanagerservice.consents.entity.Consent;
+import com.swaksha.consentmanagerservice.consents.service.ConsentService;
+import com.swaksha.consentmanagerservice.patientAuth.service.PatientService;
+
+<<<<<<< HEAD:consent-manager-service/src/main/java/com/swaksha/consentmanagerservice/consents/ConsentController.java
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.swaksha.consentmanagerservice.entity.Consent;
 import lombok.Getter;
+=======
+>>>>>>> 89609882fdadcebc982da29b41d2e01d4c082bc8:consent-manager-service/src/main/java/com/swaksha/consentmanagerservice/consents/controller/ConsentController.java
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -25,6 +32,7 @@ import java.util.ArrayList;
 public class ConsentController {
 
     private final ConsentService consentService;
+    private final PatientService patientService;
 
     private RestTemplate restTemplate = new RestTemplateBuilder().build();
 
@@ -34,17 +42,11 @@ public class ConsentController {
                              LocalDate consentEndDate, String consentID, boolean selfConsent, boolean isApproved){
     }
     public record ApproveConsentBody(String patientSSID, String encPin, ConsentObj consentObj){}
-
     public record VerifyConsentBody(String reqSSID, ConsentObj consentObj){}
-
     public record OnApproveConsentBody(String response, ConsentObj consentObj){}
-
     public record OnVerifyConsentBody(String response, String reqSSID, ConsentObj consentObj){}
-
     public record OnFetchConsentsBody(String SSID, ArrayList<ConsentObj> consentObjs){}
-
     public record PinToVerifyBody(String SSID, String encPin){}
-
     public record PatientSSIDBody(String patientSSID){}
 
 
@@ -53,26 +55,24 @@ public class ConsentController {
         // Verify that the patient pin is valid
         // call /cm/patient/auth/verifyPin
 
-        String url = "http://localhost:9006/cm/patient/auth/verifyPin";
-//        System.out.println(approveConsentBody.patientSSID);
-//        System.out.println(approveConsentBody.encPin);
+//        String url = "http://localhost:9006/cm/patient/auth/verifyPin";
+//
+//        HttpEntity<PinToVerifyBody> entity = new HttpEntity<>(new PinToVerifyBody(
+//                approveConsentBody.patientSSID, approveConsentBody.encPin
+//        ));
+//        ResponseEntity<Boolean> re = this.restTemplate.postForEntity(url, entity, Boolean.class);
 
-        HttpEntity<PinToVerifyBody> entity = new HttpEntity<>(new PinToVerifyBody(
-                approveConsentBody.patientSSID, approveConsentBody.encPin
-        ));
-        ResponseEntity<Boolean> re = this.restTemplate.postForEntity(url, entity, Boolean.class);
+        boolean re = this.patientService.verifyPin(approveConsentBody.patientSSID, approveConsentBody.encPin);
 
         // Respond to /gateway/request/onApproveConsent
 
         System.out.println("consent object-");
-        System.out.println(re.getBody());
+        System.out.println(re);
 
-        if(!re.getBody()){
+        if(!re){
             HttpEntity<OnApproveConsentBody> approveEntity = new HttpEntity<>(new OnApproveConsentBody(
                     "Rejected", approveConsentBody.consentObj
             ));
-            // this.restTemplate.postForEntity(returnUrl, approveEntity, Boolean.class);
-            // return;
             return approveEntity;
         }
 
@@ -83,7 +83,6 @@ public class ConsentController {
         HttpEntity<OnApproveConsentBody> approveEntity = new HttpEntity<>(new OnApproveConsentBody(
                 "Approved", consentObj
         ));
-        // this.restTemplate.postForEntity(returnUrl, approveEntity, Boolean.class);
         return approveEntity;
     }
 

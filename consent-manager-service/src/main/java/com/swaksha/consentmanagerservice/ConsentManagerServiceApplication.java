@@ -6,8 +6,6 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-
-
 @SpringBootApplication
 public class ConsentManagerServiceApplication {
 
@@ -17,5 +15,4 @@ public class ConsentManagerServiceApplication {
 //		mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 		SpringApplication.run(ConsentManagerServiceApplication.class, args);
 	}
-
 }
