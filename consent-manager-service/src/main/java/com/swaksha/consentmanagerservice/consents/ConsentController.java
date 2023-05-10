@@ -1,8 +1,12 @@
 package com.swaksha.consentmanagerservice.consents;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.swaksha.consentmanagerservice.entity.Consent;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -25,9 +29,9 @@ public class ConsentController {
     private RestTemplate restTemplate = new RestTemplateBuilder().build();
 
     public record ConsentObj(String doctorSSID, String hiuSSID, String patientSSID, String hipSSID,
-                      LocalDate dataAccessStartDate, LocalDate dataAccessEndDate,
-                      LocalDate requestInitiatedDate, LocalDate consentApprovedDate,
-                      LocalDate consentEndDate, String consentID, boolean selfConsent, boolean isApproved){
+                             LocalDate dataAccessStartDate, LocalDate dataAccessEndDate,
+                             LocalDate requestInitiatedDate, LocalDate consentApprovedDate,
+                             LocalDate consentEndDate, String consentID, boolean selfConsent, boolean isApproved){
     }
     public record ApproveConsentBody(String patientSSID, String encPin, ConsentObj consentObj){}
 
@@ -43,7 +47,7 @@ public class ConsentController {
 
     public record PatientSSIDBody(String patientSSID){}
 
-    // the gateway service can verify the user pin to approve the consent
+
     @PostMapping("/approveConsent")
     public HttpEntity<OnApproveConsentBody> verifyConsentCM(@RequestBody ApproveConsentBody approveConsentBody){
         // Verify that the patient pin is valid
