@@ -35,6 +35,8 @@ public class ConsentController {
     public record ApproveConsentBody(String patientSSID, String encPin, ConsentObj consentObj){}
     public record VerifyConsentBody(String reqSSID, ConsentObj consentObj){}
     public record OnApproveConsentBody(String response, ConsentObj consentObj){}
+
+    public record RevokeConsentBody(String consentID, String reqSSID){}
     public record OnVerifyConsentBody(String response, String reqSSID, ConsentObj consentObj){}
     public record OnFetchConsentsBody(String SSID, ArrayList<ConsentObj> consentObjs){}
     public record PinToVerifyBody(String SSID, String encPin){}
@@ -127,9 +129,16 @@ public class ConsentController {
 
     // patient can request to revoke consents form CM
     @PostMapping("/revokeConsent")
-    public HttpEntity<ConsentObj> revokeConsents(@RequestBody ConsentObj consentObj){
+    public HttpEntity<ConsentObj> revokeConsents(@RequestBody RevokeConsentBody revokeConsentBody){
+        System.out.println("reached cm");
+        System.out.println(revokeConsentBody.reqSSID);
+        System.out.println(revokeConsentBody.consentID);
+
         // search and erase consent object if exists
-        ConsentObj revoked = cObjOf(this.consentService.revokeConsent(consentOf(consentObj)));
+        ConsentObj revoked = cObjOf(this.consentService.searchConsentObjWithConsentID(revokeConsentBody.consentID));
+        revoked = cObjOf(this.consentService.revokeConsent(consentOf(revoked)));
+
+        System.out.println(revoked.isApproved);
 
         // return new object
         return new HttpEntity<>(revoked);
@@ -137,9 +146,10 @@ public class ConsentController {
 
     // reject Consent
     @PostMapping("/rejectConsent")
-    public HttpEntity<Boolean> rejectConsent(@RequestBody ConsentObj consentObj){
+    public HttpEntity<Boolean> rejectConsent(@RequestBody RevokeConsentBody revokeConsentBody){
         // search and erase consent object if exists
-        boolean rejected = this.consentService.rejectConsent(consentOf(consentObj));
+        ConsentObj revoked = cObjOf(this.consentService.searchConsentObjWithConsentID(revokeConsentBody.consentID));
+        boolean rejected = this.consentService.rejectConsent(consentOf(revoked));
 
         // return success or failure
         return new HttpEntity<>(rejected);
