@@ -109,6 +109,7 @@ public class RequestController {
     {
         if (ehrData.size()<1){
             System.out.println("Empty data.");
+            return "Empty data";
         }
         Patient patient=this.requestService.findPatientById(ehrData.get(0).patientSSID);
         for(int i=0;i<ehrData.size();i++){
@@ -165,6 +166,12 @@ public class RequestController {
     @PostMapping("/consentUpdate")
     public HttpEntity<Boolean> consentUpdate(@RequestBody ConsentObj consentObj){
         boolean update = this.requestService.updateConsentObj(consentObj);
+        return new HttpEntity<>(update);
+    }
+
+    @PostMapping("/deleteConsent")
+    public HttpEntity<Boolean> deleteConsent(@RequestBody String consentId){
+        boolean update = this.requestService.deleteConsentObj(consentId);
         return new HttpEntity<>(update);
     }
 

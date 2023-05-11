@@ -201,4 +201,10 @@ public class RequestController {
         return new HttpEntity<>(update);
     }
 
+    @PostMapping("/deleteConsent")
+    public HttpEntity<Boolean> deleteConsent(@RequestBody String consentId){
+        boolean update = this.requestService.deleteConsentObj(consentId);
+        return new HttpEntity<>(update);
+    }
+
 }

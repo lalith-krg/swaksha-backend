@@ -158,11 +158,11 @@ public class RequestController {
 
         // VALIDATE HIU
 
-        String url = "http://localhost:8999/cm/consents/fetchConsentById";
+        String url = "http://localhost:9006/cm/consents/fetchConsentById";
         ResponseEntity<ConsentObj> co_entity = this.restTemplate.postForEntity(url,
                 new ConsentIdBody(hiuRequestWithConsentId.consentId), ConsentObj.class);
 
-        if(co_entity.getBody().consentID==null && !co_entity.getBody().isApproved){
+        if(co_entity.getBody().consentID==null || !co_entity.getBody().isApproved){
             return new HttpEntity<>(new OnHiuRequestBody("Invalid consent", null, null));
         }
 
@@ -415,11 +415,11 @@ public class RequestController {
 
         HttpEntity<ConsentObj> co_entity = new HttpEntity<>(Objects.requireNonNull(re.getBody()));
 
-//        String hiuUrl = this.requestService.getHipLink(Objects.requireNonNull(co_entity.getBody()).hiuSSID) + "/hospital/requests/consentUpdate";
-//        ResponseEntity<Boolean> hiu_re = this.restTemplate.postForEntity(hiuUrl, co_entity, Boolean.class);
-//
-//        String hipUrl = this.requestService.getHipLink(Objects.requireNonNull(co_entity.getBody()).hipSSID) + "/hospital/requests/consentUpdate";
-//        ResponseEntity<Boolean> hip_re = this.restTemplate.postForEntity(hipUrl, co_entity, Boolean.class);
+        String hiuUrl = this.requestService.getHipLink(Objects.requireNonNull(co_entity.getBody()).hiuSSID) + "/hospital/requests/consentUpdate";
+        ResponseEntity<Boolean> hiu_re = this.restTemplate.postForEntity(hiuUrl, co_entity, Boolean.class);
+
+        String hipUrl = this.requestService.getHipLink(Objects.requireNonNull(co_entity.getBody()).hipSSID) + "/hospital/requests/consentUpdate";
+        ResponseEntity<Boolean> hip_re = this.restTemplate.postForEntity(hipUrl, co_entity, Boolean.class);
 
         if(co_entity.getBody().isApproved)
             return new HttpEntity<>(new VerifyConsentResponse("Negative"));
@@ -441,17 +441,24 @@ public class RequestController {
         if(!validity){
             // respond with invalid details
         }
-        String url = "http://localhost:9006/cm/consents/rejectConsent";
+
+        String url = "http://localhost:9006/cm/consents/fetchConsentById";
+        ResponseEntity<ConsentObj> co_entity = this.restTemplate.postForEntity(url,
+                new ConsentIdBody(revokeConsentBody.consentID), ConsentObj.class);
+
+        url = "http://localhost:9006/cm/consents/rejectConsent";
         ResponseEntity<Boolean> re = this.restTemplate.postForEntity(url,
                 new HttpEntity<>(revokeConsentBody), Boolean.class);
 
         // notify
 
-//        String hiuUrl = this.requestService.getHipLink(Objects.requireNonNull(co_entity.getBody()).hiuSSID) + "/hospital/requests/consentUpdate";
-//        ResponseEntity<Boolean> hiu_re = this.restTemplate.postForEntity(hiuUrl, co_entity, Boolean.class);
-//
-//        String hipUrl = this.requestService.getHipLink(Objects.requireNonNull(co_entity.getBody()).hipSSID) + "/hospital/requests/consentUpdate";
-//        ResponseEntity<Boolean> hip_re = this.restTemplate.postForEntity(hipUrl, co_entity, Boolean.class);
+        String hiuUrl = this.requestService.getHipLink(Objects.requireNonNull(co_entity.getBody()).hiuSSID) + "/hospital/requests/deleteConsent";
+        ResponseEntity<Boolean> hiu_re = this.restTemplate.postForEntity(hiuUrl,
+                new HttpEntity<>(revokeConsentBody.consentID), Boolean.class);
+
+        String hipUrl = this.requestService.getHipLink(Objects.requireNonNull(co_entity.getBody()).hipSSID) + "/hospital/requests/deleteConsent";
+        ResponseEntity<Boolean> hip_re = this.restTemplate.postForEntity(hipUrl,
+                new HttpEntity<>(revokeConsentBody.consentID), Boolean.class);
 
         if(re.getBody())
             return new HttpEntity<>(new VerifyConsentResponse("Negative"));
