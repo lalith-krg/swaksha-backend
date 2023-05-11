@@ -44,9 +44,8 @@ public class RequestController {
 
 
 //    record EhrData(String data,String patientSSID){}
-    record EhrData(LocalDate creationDate, String patientSSID,
-                   String type, String observationCode, String observationValue,
-                   String conditionCode, String procedureCode){
+    record EhrData(LocalDate creationDate, String patientSSID, String type, String observationCode,
+                   String observationValue, String conditionCode, String procedureCode){
     }
     record HiuPlaceRequestWithConsent(String docSSID, String patientSSID, String consentID){}
 
@@ -106,8 +105,11 @@ public class RequestController {
     }
 
     @PostMapping("/getRequestedData")
-    public String storeRequestedData(@RequestBody List<EhrData> ehrData)
+    public String storeRequestedData(@RequestBody ArrayList<EhrData> ehrData)
     {
+        if (ehrData.size()<1){
+            System.out.println("Empty data.");
+        }
         Patient patient=this.requestService.findPatientById(ehrData.get(0).patientSSID);
         for(int i=0;i<ehrData.size();i++){
             System.out.println(ehrData.get(i).patientSSID);
