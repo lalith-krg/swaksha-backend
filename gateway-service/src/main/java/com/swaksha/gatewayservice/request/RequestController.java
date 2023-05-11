@@ -379,7 +379,8 @@ public class RequestController {
             return new HttpEntity<VerifyConsentResponse>(new VerifyConsentResponse("Invalid SSID"));
 
         }
-
+        System.out.println(verifyConsentBody.consentObj.dataAccessStartDate.getClass());
+        System.out.println(verifyConsentBody.consentObj.dataAccessStartDate);
         String url = "http://localhost:9006/cm/consents/verifyConsent";
         HttpEntity<VerifyConsentBody> consentEntity = new HttpEntity<>(verifyConsentBody);
         ResponseEntity<OnVerifyConsentBody> re = this.restTemplate.postForEntity(url, consentEntity,
