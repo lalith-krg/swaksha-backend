@@ -99,7 +99,6 @@ public class RequestController {
         //set API key in header .
 
         ResponseEntity<OnHiuRequestBody> ohr = this.restTemplate.postForEntity(url, reqEntity, OnHiuRequestBody.class);
-
         return new ResponseEntity<>(ohr.getBody(), HttpStatus.OK);
     }
 
@@ -148,9 +147,7 @@ public class RequestController {
             this.requestService.save(ehr);
         }
 
-
-    //    Ehr.builder().data(ehrData.getData()).patient(ehrData.getPatient());
-
+        // notification-to-patient-({number of recordds} fetched)-(From HIP to HIU)
 
         return "data saved";
     }

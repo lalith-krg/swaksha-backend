@@ -157,7 +157,7 @@ public class RequestController {
         HttpEntity<ConsentObj> consentEntity = new HttpEntity<>(consentObj);
         System.out.println(consentEntity);
         ResponseEntity<Boolean> response = this.restTemplate.postForEntity(url, consentEntity, Boolean.class);
-
+        // notification-to-patient-(new pending consent)-(Request placed by HIU)
         if (Boolean.TRUE.equals(response.getBody()))
             return new HttpEntity<OnHiuRequestBody>(new OnHiuRequestBody("Consent Request Success", consentObj.doctorSSID, consentObj.hiuSSID));
         else
@@ -208,6 +208,7 @@ public class RequestController {
 
         System.out.println("hello");
         if(Objects.equals(Objects.requireNonNull(hip_re.getBody()).response, "Request Sent"))
+            // notification-to-patient-(New data request placed)-(By HIU to HIP)
             return new HttpEntity<OnHiuRequestBody>(new OnHiuRequestBody("Consent valid. Request placed.",
                     co_entity.getBody().doctorSSID, co_entity.getBody().hiuSSID));
         else
@@ -320,7 +321,7 @@ public class RequestController {
 
         System.out.println(re.getBody().response);
         if (Objects.requireNonNull(re.getBody()).response.equals("Approved")){
-
+            // notification-to-patient-(consent approved)-(consent {ID} approved)
             HttpEntity<ConsentObj> co_entity = new HttpEntity<>(Objects.requireNonNull(re.getBody()).consentObj);
 
             String hiuUrl = this.requestService.getHipLink(Objects.requireNonNull(co_entity.getBody()).hiuSSID) + "/hospital/requests/consentUpdate";
@@ -352,11 +353,12 @@ public class RequestController {
 
              System.out.println("reached HERE");
 
-                 if(Objects.equals(Objects.requireNonNull(sr_re.getBody()), "data sent"))
-                return new HttpEntity<ApproveConsentResponse>(new ApproveConsentResponse("Consent Approved. Request placed."));
-            else
-                return  new HttpEntity<ApproveConsentResponse>(new ApproveConsentResponse("Consent Approved. Request " +
-                        "failed."));
+                 if(Objects.equals(Objects.requireNonNull(sr_re.getBody()), "data sent")) {
+                     // notification-to-hiu-(consent approved)-(consent {ID} approved)
+                     return new HttpEntity<ApproveConsentResponse>(new ApproveConsentResponse("Consent Approved. Request placed."));
+                 }else {
+                     return  new HttpEntity<ApproveConsentResponse>(new ApproveConsentResponse("Consent Approved. Request " + "failed."));
+                 }
         }
 
         return  new HttpEntity<ApproveConsentResponse>(new ApproveConsentResponse("done"));
@@ -448,6 +450,7 @@ public class RequestController {
         String url = "http://localhost:9006/cm/consents/revokeConsent";
         ResponseEntity<ConsentObj> re = this.restTemplate.postForEntity(url,
                 new HttpEntity<>(revokeConsentBody), ConsentObj.class);
+        // notification-to-patient-(Revoke consent fail/success)-{ID}
 
         HttpEntity<ConsentObj> co_entity = new HttpEntity<>(Objects.requireNonNull(re.getBody()));
 
@@ -485,8 +488,7 @@ public class RequestController {
         url = "http://localhost:9006/cm/consents/rejectConsent";
         ResponseEntity<Boolean> re = this.restTemplate.postForEntity(url,
                 new HttpEntity<>(revokeConsentBody), Boolean.class);
-
-        // notify
+        // notification-to-patient-(Reject consent success/fail)
 
         String hiuUrl = this.requestService.getHipLink(Objects.requireNonNull(co_entity.getBody()).hiuSSID) + "/hospital/requests/deleteConsent";
         ResponseEntity<Boolean> hiu_re = this.restTemplate.postForEntity(hiuUrl,
