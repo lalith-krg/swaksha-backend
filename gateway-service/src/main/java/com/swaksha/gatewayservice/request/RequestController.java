@@ -336,6 +336,8 @@ public class RequestController {
         // Check if all fields are filled and valid
         String reqSSID = verifyConsentBody.reqSSID;
 
+        System.out.println("Reached verify consent");
+
         boolean validity = this.requestService.validateSSID(reqSSID);
 
         if (!(Objects.equals(reqSSID, verifyConsentBody.consentObj().doctorSSID) ||

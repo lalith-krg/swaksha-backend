@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -32,9 +33,9 @@ public class RequestController {
 
     private final RequestService requestService;
 
-    private final PatientRepo patientRepo;
-
-    private final EhrRepo ehrRepo;
+//    private final PatientRepo patientRepo;
+//
+//    private final EhrRepo ehrRepo;
     public record ConsentObj(String doctorSSID, String hiuSSID, String patientSSID, String hipSSID,
                              LocalDate dataAccessStartDate, LocalDate dataAccessEndDate,
                              LocalDate requestInitiatedDate, LocalDate consentApprovedDate,
@@ -107,7 +108,7 @@ public class RequestController {
     @PostMapping("/getRequestedData")
     public String storeRequestedData(@RequestBody List<EhrData> ehrData)
     {
-        Patient patient=patientRepo.findPatientBySsid(ehrData.get(0).patientSSID);
+        Patient patient=this.requestService.findPatientById(ehrData.get(0).patientSSID);
         for(int i=0;i<ehrData.size();i++){
             System.out.println(ehrData.get(i).patientSSID);
 //            System.out.println(ehrData.get(i).data);
@@ -121,7 +122,7 @@ public class RequestController {
             ehr.setProcedureCode(ehrData.get(i).procedureCode);
 
             ehr.setPatient(patient);
-            ehrRepo.save(ehr);
+            this.requestService.save(ehr);
         }
 
 
@@ -146,7 +147,7 @@ public class RequestController {
         // if verified send data
         if(Objects.equals(Objects.requireNonNull(vc_re.getBody()).response, "Verified")){
             url= hipRequestBody.dataPostUrl();
-            List<Ehr> ehrData=ehrRepo.findByPatientSsid(hipRequestBody.consentObj.patientSSID);
+            ArrayList<Ehr> ehrData = this.requestService.fetchEhrData(hipRequestBody.consentObj.patientSSID);
 
             ResponseEntity<String> response=this.restTemplate.postForEntity(url,ehrData,String.class);
             System.out.println(response.getBody());
@@ -161,7 +162,7 @@ public class RequestController {
 
     @PostMapping("/consentUpdate")
     public HttpEntity<Boolean> consentUpdate(@RequestBody ConsentObj consentObj){
-        boolean update = this.requestService.save(consentObj);
+        boolean update = this.requestService.updateConsentObj(consentObj);
         return new HttpEntity<>(update);
     }
 

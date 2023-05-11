@@ -12,6 +12,7 @@ import java.util.List;
 @Repository
 public interface EhrRepo extends JpaRepository<Ehr, String> {
  //  @Query("select r from Ehr r where r.patientSsID=ssid and r.creationDate <= startDate and r.creationDate>=endDate")
-    List<Ehr> findByPatientSsIDAndCreationDateBetween( String ssid,LocalDate startDate, LocalDate endDate);
+    List<Ehr> findByPatientSsidAndCreationDateBetween( String ssid,LocalDate startDate, LocalDate endDate);
+    List<Ehr> findByPatientSsid(String ssid);
 
 }
