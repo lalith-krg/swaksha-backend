@@ -41,9 +41,8 @@ public class RequestController {
 
 
 //    record EhrData(String data,String patientSSID){}
-    record EhrData(LocalDate creationDate, String patientSSID,
-                   String type, String observationCode, String observationValue,
-                   String conditionCode, String procedureCode){
+    record EhrData(LocalDate creationDate, String patientSSID, String type, String observationCode,
+                   String observationValue, String conditionCode, String procedureCode,String data){
     }
     record HiuPlaceRequestWithConsent(String docSSID, String patientSSID, String consentID){}
 
@@ -108,9 +107,15 @@ public class RequestController {
     }
 
     @PostMapping("/getRequestedData")
-    public String storeRequestedData(@RequestBody List<EhrData> ehrData)
+    public String storeRequestedData(@RequestBody ArrayList<EhrData> ehrData)
     {
-        if(ehrData.size()<1)return "empty data";
+
+
+
+        if (ehrData.size()<1){
+            System.out.println("Empty data.");
+            return "Empty data";
+        }
 
         Patient patient=this.requestService.findPatientById(ehrData.get(0).patientSSID);
         for(int i=0;i<ehrData.size();i++){
@@ -120,6 +125,7 @@ public class RequestController {
 //            ehr.setData(ehrData.get(i).data);
             ehr.setCreationDate(ehrData.get(i).creationDate);
             ehr.setType(ehrData.get(i).type);
+            ehr.setData(ehrData.get(i).data);
             ehr.setObservationCode(ehrData.get(i).observationCode);
             ehr.setObservationValue(ehrData.get(i).observationValue);
             ehr.setConditionCode(ehrData.get(i).conditionCode);
@@ -167,6 +173,12 @@ public class RequestController {
     @PostMapping("/consentUpdate")
     public HttpEntity<Boolean> consentUpdate(@RequestBody ConsentObj consentObj){
         boolean update = this.requestService.updateConsentObj(consentObj);
+        return new HttpEntity<>(update);
+    }
+
+    @PostMapping("/deleteConsent")
+    public HttpEntity<Boolean> deleteConsent(@RequestBody String consentId){
+        boolean update = this.requestService.deleteConsentObj(consentId);
         return new HttpEntity<>(update);
     }
 

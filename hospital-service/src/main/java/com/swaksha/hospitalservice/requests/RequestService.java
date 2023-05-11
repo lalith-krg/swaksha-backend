@@ -57,6 +57,11 @@ public class RequestService {
         this.ehrRepo.save(ehr);
     }
 
+    public boolean deleteConsentObj(String consentId) {
+        this.consentRepo.delete((Consent) this.consentRepo.findByConsentID(consentId));
+        return true;
+    }
+
     private RequestController.ConsentObj cObjOf(Consent consent){
         return new RequestController.ConsentObj(consent.getDoctorSSID(),
                 consent.getHiuSSID(), consent.getPatientSSID(), consent.getHipSSID(),

@@ -46,9 +46,8 @@ public class RequestController {
 
 //    record SendRequestedData(String data,String patientSSID){}
 
-    record SendRequestedData(LocalDate creationDate, String patientSSID,
-                             String type, String observationCode, String observationValue,
-                             String conditionCode, String procedureCode){}
+    record EhrData(String creationDate, String patientSSID, String type, String observationCode,
+                   String observationValue, String conditionCode, String procedureCode){}
 
     record HiuPlaceRequestWithConsent(String docSSID, String patientSSID, String consentID){}
 
@@ -65,7 +64,7 @@ public class RequestController {
     record VerifyConsentBody(String reqSSID, ConsentObj1 consentObj){}
 
     record OnVerifyConsentBody(String response, String reqSSID, ConsentObj consentObj){}
-
+    record OnHipRequestBody(String response){}
     @PostMapping("/demo")
     public String demo(){
         return "hello !";
@@ -125,7 +124,7 @@ public class RequestController {
 //    }
 
     @PostMapping("/hip/sendRequest")
-    public HttpEntity<String> hipSendRequest(@RequestBody HipRequestBody hipRequestBody){
+    public HttpEntity<OnHipRequestBody> hipSendRequest(@RequestBody HipRequestBody hipRequestBody){
         System.out.println("here i am ");
         // check if consentObj is valid in gateway
         // call /gateway/request/verifyRequest
@@ -146,59 +145,66 @@ public class RequestController {
         boolean saved = this.requestService.updateConsentObj(Objects.requireNonNull(consentObj));
         System.out.println(saved);
 
-        ResponseEntity<VerifyConsentResponse> vc_re = this.restTemplate.postForEntity(url, consentEntity,
-                VerifyConsentResponse.class);
+//        ResponseEntity<VerifyConsentResponse> vc_re = this.restTemplate.postForEntity(url, consentEntity,
+//                VerifyConsentResponse.class);
 
 
 //         if verified send data
-        if(Objects.equals(Objects.requireNonNull(vc_re.getBody()).response, "Verified")){
+//        if(Objects.equals(Objects.requireNonNull(vc_re.getBody()).response, "Verified")){
             saved = this.requestService.updateConsentObj(Objects.requireNonNull(consentObj));
             System.out.println(saved);
 
             url = hipRequestBody.dataPostUrl();
 
-            ArrayList<Ehr> ehrData = this.requestService.findPatientEhrData(hipRequestBody.consentObj.patientSSID,
+            ArrayList<Ehr> data = this.requestService.findPatientEhrData(hipRequestBody.consentObj.patientSSID,
                     hipRequestBody.consentObj.dataAccessStartDate,
                     hipRequestBody.consentObj.dataAccessEndDate);
-            System.out.println(ehrData.size());
+            System.out.println(data.size());
             System.out.println(hipRequestBody.consentObj.patientSSID);
             System.out.println(hipRequestBody.consentObj.dataAccessStartDate);
             System.out.println(hipRequestBody.consentObj.dataAccessEndDate);
          //   ehrData=ehrRepo
-            ArrayList<SendRequestedData> data = new ArrayList<>();
+            ArrayList<EhrData> ehrData = new ArrayList<>();
 
-            for (Ehr ehrDatum : ehrData) {
-//                SendRequestedData sendRequestedData = new SendRequestedData(ehrDatum.getData(), ehrDatum.getPatient().getSsID());
-                SendRequestedData sendRequestedData = new SendRequestedData(
-                        ehrDatum.getCreationDate(),
-                        ehrDatum.getPatient().getSsid(),
-                        ehrDatum.getType(),
-                        ehrDatum.getObservationCode(),
-                        ehrDatum.getObservationValue(),
-                        ehrDatum.getConditionCode(),
-                        ehrDatum.getProcedureCode());
-                data.add(sendRequestedData);
+            for (Ehr datum : data) {
+//                EhrData sendRequestedData = new EhrData(datum.getData(), datum.getPatient().getSsID());
+                EhrData ehrDatum = new EhrData(
+                        String.valueOf(datum.getCreationDate()),
+                        datum.getPatient().getSsid(),
+                        datum.getType(),
+                        datum.getObservationCode(),
+                        datum.getObservationValue(),
+                        datum.getConditionCode(),
+                        datum.getProcedureCode());
+                ehrData.add(ehrDatum);
 //                System.out.println(ehrDatum.getData());
             }
 
             if(ehrData.size()>0)
-                System.out.println(ehrData.get(0).getPatient().getSsid());
+                System.out.println(ehrData.get(0).patientSSID);
             else
                 System.out.println("No data records available");
 
-            ResponseEntity<String> response=this.restTemplate.postForEntity(url,data,String.class);
+            ResponseEntity<String> response=this.restTemplate.postForEntity(url, new HttpEntity<>(ehrData), String.class);
             System.out.println(response.getBody());
-        }
-        else{
-            // notify error
-
-        }
-        return new HttpEntity<>("data sent");
+//        }
+//        else{
+//            // notify error
+//
+//        }
+        OnHipRequestBody onHipRequestBody =new OnHipRequestBody("data sent");
+        return new HttpEntity<>(onHipRequestBody);
     }
 
     @PostMapping("/consentUpdate")
     public HttpEntity<Boolean> consentUpdate(@RequestBody ConsentObj consentObj){
         boolean update = this.requestService.updateConsentObj(consentObj);
+        return new HttpEntity<>(update);
+    }
+
+    @PostMapping("/deleteConsent")
+    public HttpEntity<Boolean> deleteConsent(@RequestBody String consentId){
+        boolean update = this.requestService.deleteConsentObj(consentId);
         return new HttpEntity<>(update);
     }
 
