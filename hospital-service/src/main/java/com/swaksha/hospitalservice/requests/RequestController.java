@@ -2,6 +2,7 @@ package com.swaksha.hospitalservice.requests;
 
 import com.swaksha.hospitalservice.entity.Ehr;
 import com.swaksha.hospitalservice.entity.Patient;
+import com.swaksha.hospitalservice.repository.ConsentRepo;
 import com.swaksha.hospitalservice.repository.EhrRepo;
 import com.swaksha.hospitalservice.repository.PatientRepo;
 import jakarta.persistence.Column;
@@ -30,6 +31,7 @@ public class RequestController {
 
     private final RequestService requestService;
 
+    private final ConsentRepo consentRepo;
 //    private final PatientRepo patientRepo;
 //
 //    private final EhrRepo ehrRepo;
@@ -42,7 +44,7 @@ public class RequestController {
 
 //    record EhrData(String data,String patientSSID){}
     record EhrData(LocalDate creationDate, String patientSSID, String type, String observationCode,
-                   String observationValue, String conditionCode, String procedureCode,String data){
+                   String observationValue, String conditionCode, String procedureCode){
     }
     record HiuPlaceRequestWithConsent(String docSSID, String patientSSID, String consentID){}
 
@@ -63,10 +65,21 @@ public class RequestController {
     record HiuRequestWithConsentId(String consentId){}
     record OnVerifyConsentBody(String response, String reqSSID, ConsentObj consentObj){}
 
+    record FetchConsents(ArrayList<ConsentObj> consentObjs){};
     @PostMapping("/demo")
     public String demo(){
         return "hello !";
     }
+
+    @PostMapping("/fetchConsents")
+    public HttpEntity<FetchConsents> fetchConsents(@RequestBody String consentId,Authentication authentication){
+        String docSsid=authentication.getName();
+        ArrayList<ConsentObj> consentObjs=this.requestService.findByDoctorSsid(docSsid);
+        FetchConsents fetchConsents=new FetchConsents(consentObjs);
+        HttpEntity<FetchConsents> fetchConsentsHttpEntity=new HttpEntity<>(fetchConsents);
+        return fetchConsentsHttpEntity;
+    }
+
     @PostMapping("/newRequest")
     public HttpEntity<OnHiuRequestBody> hiuRequest(@RequestBody HiuRequestBody hiuPlaceRequest, Authentication authentication) {
 
@@ -125,7 +138,7 @@ public class RequestController {
 //            ehr.setData(ehrData.get(i).data);
             ehr.setCreationDate(ehrData.get(i).creationDate);
             ehr.setType(ehrData.get(i).type);
-            ehr.setData(ehrData.get(i).data);
+
             ehr.setObservationCode(ehrData.get(i).observationCode);
             ehr.setObservationValue(ehrData.get(i).observationValue);
             ehr.setConditionCode(ehrData.get(i).conditionCode);

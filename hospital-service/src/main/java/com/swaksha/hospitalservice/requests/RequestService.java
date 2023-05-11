@@ -26,6 +26,14 @@ public class RequestService {
         Consent consent = ((ArrayList<Consent>) this.consentRepo.findByConsentID(consentID)).get(0);
         return cObjOf(consent);
     }
+    public ArrayList<RequestController.ConsentObj> findByDoctorSsid(String docSSID){
+        ArrayList<Consent> arr=consentRepo.findByDoctorSSID(docSSID);
+        ArrayList<RequestController.ConsentObj> consentObjs= new ArrayList<>();
+        for(Consent consent:arr){
+            consentObjs.add(cObjOf(consent));
+        }
+        return consentObjs;
+    }
 
     public boolean updateConsentObj(RequestController.ConsentObj consentObj) {
         return save(consentOf(consentObj));
