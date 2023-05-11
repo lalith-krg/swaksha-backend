@@ -57,7 +57,12 @@ public class RequestService {
     }
 
     public boolean deleteConsentObj(String consentId) {
-        this.consentRepo.delete((Consent) this.consentRepo.findByConsentID(consentId));
+        ArrayList<Consent> consents = (ArrayList<Consent>) this.consentRepo.findByConsentID(consentId);
+        if(consents.size()<1)
+            return false;
+
+        this.consentRepo.delete(consents.get(0));
+
         return true;
     }
 

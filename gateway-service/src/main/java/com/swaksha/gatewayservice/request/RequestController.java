@@ -160,7 +160,7 @@ public class RequestController {
 
         String url = "http://localhost:9006/cm/consents/fetchConsentById";
         ResponseEntity<ConsentObj> co_entity = this.restTemplate.postForEntity(url,
-                new ConsentIdBody(hiuRequestWithConsentId.consentId), ConsentObj.class);
+                new HttpEntity<>(new ConsentIdBody(hiuRequestWithConsentId.consentId)), ConsentObj.class);
 
         if(co_entity.getBody().consentID==null || !co_entity.getBody().isApproved){
             return new HttpEntity<>(new OnHiuRequestBody("Invalid consent", null, null));
@@ -444,7 +444,7 @@ public class RequestController {
 
         String url = "http://localhost:9006/cm/consents/fetchConsentById";
         ResponseEntity<ConsentObj> co_entity = this.restTemplate.postForEntity(url,
-                new ConsentIdBody(revokeConsentBody.consentID), ConsentObj.class);
+                new HttpEntity<>(new ConsentIdBody(revokeConsentBody.consentID)), ConsentObj.class);
 
         url = "http://localhost:9006/cm/consents/rejectConsent";
         ResponseEntity<Boolean> re = this.restTemplate.postForEntity(url,
