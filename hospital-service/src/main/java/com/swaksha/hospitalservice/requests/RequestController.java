@@ -156,4 +156,9 @@ public class RequestController {
         }
     }
 
+
+    @PostMapping("/storeEHR")
+    public void storeEHR () {}
+
+
 }

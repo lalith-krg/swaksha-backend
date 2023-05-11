@@ -141,7 +141,7 @@ public class RequestController {
                         ehrDatum.getConditionCode(),
                         ehrDatum.getProcedureCode());
                 data.add(sendRequestedData);
-                System.out.println(ehrDatum.getData());
+//                System.out.println(ehrDatum.getData());
             }
 
             System.out.println(ehrData.get(0).getPatient().getSsID());
