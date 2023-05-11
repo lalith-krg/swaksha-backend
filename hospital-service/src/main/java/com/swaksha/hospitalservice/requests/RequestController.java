@@ -178,7 +178,36 @@ public class RequestController {
     }
 
     @PostMapping("/storeEHR")
-    public void storeEHR () {}
+    public HttpEntity<String> storeEHR (@RequestBody EhrData ehrRecord, Authentication authentication) {
+//        System.out.println("reached here");
+//        System.out.println(ehrRecord.type);
+//        System.out.println(ehrRecord.observationCode);
+//        System.out.println(ehrRecord.observationValue);
+//        System.out.println(ehrRecord.conditionCode);
+//        System.out.println(ehrRecord.creationDate);
+//        System.out.println(ehrRecord.procedureCode);
+//        System.out.println(ehrRecord.patientSSID);
+
+        Patient patient = patientRepo.findPatientBySsid(ehrRecord.patientSSID);
+
+        if (patient == null) {
+            return new ResponseEntity<>("notfound", HttpStatus.OK);
+        }
+
+        Ehr ehr = new Ehr();
+        ehr.setType(ehrRecord.type);
+        ehr.setCreationDate(ehrRecord.creationDate);
+        ehr.setObservationCode(ehrRecord.observationCode);
+        ehr.setObservationValue(ehrRecord.observationValue);
+        ehr.setConditionCode(ehrRecord.conditionCode);
+        ehr.setProcedureCode(ehrRecord.procedureCode);
+        ehr.setPatient(patient);
+
+        ehrRepo.save(ehr);
+
+        return new ResponseEntity<>("success", HttpStatus.OK);
+
+    }
 
     @PostMapping("/consentUpdate")
     public HttpEntity<Boolean> consentUpdate(@RequestBody ConsentObj consentObj){

@@ -27,7 +27,6 @@ public class Ehr {
     @ManyToOne
     private Patient patient;
 
-
 //    @Column
 //    String data;
 
