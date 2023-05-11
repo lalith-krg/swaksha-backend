@@ -22,13 +22,31 @@ public class Ehr {
     @Id
     private String EhrId;
 
+    @Column
+    private LocalDate creationDate;
 
     @ManyToOne
     private Patient patient;
 
-    @Column
-    private String data;
+//    @Column
+//    String data;
 
     @Column
-    private LocalDate creationDate;
+    String type;
+
+
+    // EHR of type "observation"
+    @Column
+    String observationCode;
+    @Column
+    String observationValue;
+
+
+    // EHR of type "condition"
+    @Column
+    String conditionCode;
+
+    // EHR of type "procedure"
+    @Column
+    String procedureCode;
 }

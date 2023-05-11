@@ -5,6 +5,7 @@ import com.swaksha.patientservice.entity.PatientCred;
 import com.swaksha.patientservice.service.PatientService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -25,8 +26,8 @@ import java.util.Objects;
 @CrossOrigin(origins= {"*"})
 public class PatientController {
 
-    private RestOperations restTemplate;
-
+//    private RestOperations restTemplate;
+    private final RestTemplate restTemplate = new RestTemplateBuilder().build();
     record ConsentObj(String doctorSSID, String hiuSSID, String patientSSID, String hipSSID,
                       String dataAccessStartDate, String dataAccessEndDate,
                       String requestInitiatedDate, String consentApprovedDate,
@@ -41,6 +42,8 @@ public class PatientController {
     record VerifyConsentResponse(String response){}
 
     record VerifyConsentBody(String reqSSID, ConsentObj consentObj){}
+
+    record RevokeConsentBody (String consentID, String reqSSID) {}
 
     record OnFetchConsentsBody(String SSID, ArrayList<ConsentObj> consentObjs){}
 
@@ -184,18 +187,23 @@ public class PatientController {
     }
 
     @PostMapping(path = "/rejectConsent")
-    public String rejectConsent(@RequestBody VerifyConsentBody vcb){
-        String url = "http://localhost:8999/gateway/request/rejectConsent";
-        ResponseEntity<VerifyConsentResponse> vcr = this.restTemplate.postForEntity(url, vcb,
+    public String rejectConsent(@RequestBody RevokeConsentBody rcb){
+
+        String url = "http://localhost:9005/gateway/request/rejectConsent";
+        ResponseEntity<VerifyConsentResponse> vcr = this.restTemplate.postForEntity(url, rcb,
                 VerifyConsentResponse.class);
 
         return Objects.requireNonNull(vcr.getBody()).response;
+
     }
 
     @PostMapping(path = "/revokeConsent")
-    public String revokeConsent(@RequestBody VerifyConsentBody vcb){
-        String url = "http://localhost:8999/gateway/request/revokeConsent";
-        ResponseEntity<VerifyConsentResponse> vcr = this.restTemplate.postForEntity(url, vcb,
+    public String revokeConsent(@RequestBody RevokeConsentBody rcb){
+        System.out.println("Receive revoke consent from patient");
+        System.out.println(rcb.reqSSID);
+        System.out.println(rcb.consentID);
+        String url = "http://localhost:9005/gateway/request/revokeConsent";
+        ResponseEntity<VerifyConsentResponse> vcr = this.restTemplate.postForEntity(url, rcb,
                 VerifyConsentResponse.class);
 
         return Objects.requireNonNull(vcr.getBody()).response;
