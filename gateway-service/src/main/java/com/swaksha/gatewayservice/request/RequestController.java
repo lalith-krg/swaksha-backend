@@ -193,6 +193,8 @@ public class RequestController {
 
 
         if(co_entity.getBody().consentID==null || !co_entity.getBody().isApproved){
+            OnHiuRequestBody onHiuRequestBody=new OnHiuRequestBody("Invalid consent", null, null);
+
             return new HttpEntity<>(new OnHiuRequestBody("Invalid consent", null, null));
         }
         ConsentObj consentObj=co_entity.getBody();
