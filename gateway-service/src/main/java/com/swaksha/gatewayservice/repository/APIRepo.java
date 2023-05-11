@@ -7,5 +7,5 @@ import java.util.List;
 
 @Repository
 public interface APIRepo extends JpaRepository<ApiKeys, Long> {
-    List<ApiKeys> findBySsid(String ssid);
+    List<ApiKeys> findByApiKey(String apiKey);
 }

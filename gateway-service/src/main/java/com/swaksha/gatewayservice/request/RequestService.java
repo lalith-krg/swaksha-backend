@@ -4,11 +4,8 @@ import com.swaksha.gatewayservice.entity.Doctor;
 import com.swaksha.gatewayservice.entity.Hospital;
 import com.swaksha.gatewayservice.entity.HospitalUrl;
 import com.swaksha.gatewayservice.entity.Patient;
-import com.swaksha.gatewayservice.repository.DoctorRepo;
-import com.swaksha.gatewayservice.repository.HospitalUrlRepo;
+import com.swaksha.gatewayservice.repository.*;
 
-import com.swaksha.gatewayservice.repository.HospitalRepo;
-import com.swaksha.gatewayservice.repository.PatientRepo;
 import io.swagger.v3.oas.annotations.servers.Server;
 import jakarta.validation.constraints.Null;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +27,8 @@ public class RequestService {
     private final PatientRepo patientRepo;
     private final DoctorRepo doctorRepo;
     private final HospitalRepo hospitalRepo;
-    private final HospitalUrlRepo hospitalUrlRepo;
+    private final  HospitalUrlRepo hospitalUrlRepo;
+    private final APIRepo apiRepo;
 
 
     public boolean validateSSID(String SSID) {

@@ -14,7 +14,7 @@ public class Patient {
 
     @Id
     @Column(unique = true, nullable = false)
-    private String ssID;
+    private String ssid;
 
     @Column(unique = true, nullable = false)
     private String username;

@@ -106,12 +106,12 @@ public class AuthController {
         return api_key;
     }
 
-    @PostMapping("/verify-api-key")
-    public boolean verifyApiKey(@RequestBody assignRequest request, HttpServletRequest http_request){
-        String api_key = http_request.getHeader("swaksha-api-key");
-        boolean valid = service.verifyAPIKey(request.ssid, api_key);
-        return valid;
-    }
+//    @PostMapping("/verify-api-key")
+//    public boolean verifyApiKey(@RequestBody assignRequest request, HttpServletRequest http_request){
+//        String api_key = http_request.getHeader("swaksha-api-key");
+//        boolean valid = service.verifyAPIKey(request.ssid, api_key);
+//        return valid;
+//    }
 
     @PostMapping("/assign-notification-token")
     public boolean assignNotificationTokenController(@RequestBody notificationToken notification_token, Authentication authentication){

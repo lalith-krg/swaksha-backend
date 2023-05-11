@@ -28,9 +28,6 @@ public class Ehr {
     private Patient patient;
 
 //    @Column
-//    private String data;
-
-//    @Column
 //    String data;
 
     @Column
