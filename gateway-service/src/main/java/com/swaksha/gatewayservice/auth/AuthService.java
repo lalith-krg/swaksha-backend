@@ -2,15 +2,13 @@ package com.swaksha.gatewayservice.auth;
 
 import com.swaksha.gatewayservice.entity.*;
 
-import com.swaksha.gatewayservice.repository.APIRepo;
-import com.swaksha.gatewayservice.repository.HospitalUrlRepo;
-import com.swaksha.gatewayservice.repository.PatientCredRepo;
-import com.swaksha.gatewayservice.repository.PatientRepo;
+import com.swaksha.gatewayservice.repository.*;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.stereotype.Service;
@@ -40,6 +38,7 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final HospitalUrlRepo hospitalUrlRepo;
     private final APIRepo arepository;
+    private  final NotificationTokenRepo notificationTokenRepo;
 
 
     public static String generateRandom(int length) {
@@ -144,4 +143,13 @@ public class AuthService {
         return generateSHA256(message).equals(hash);
     }
 
+    public void assignNotificationToken(String ssid, String token){
+        NotificationToken ntoken = new NotificationToken(ssid, token);
+        this.notificationTokenRepo.save(ntoken);
+    }
+
+    public String getNotificationToken(String ssid){
+        NotificationToken notificationToken = this.notificationTokenRepo.findBySsid(ssid);
+        return  notificationToken.getNotification_token();
+    }
 }
