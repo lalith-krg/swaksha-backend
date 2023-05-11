@@ -7,10 +7,7 @@ import com.swaksha.hospitalservice.repository.PatientRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -58,6 +55,7 @@ public class RequestController {
 
     record VerifyConsentBody(String reqSSID, ConsentObj consentObj){}
 
+    record HiuRequestWithConsentId(String consentId){}
     record OnVerifyConsentBody(String response, String reqSSID, ConsentObj consentObj){}
 
     @PostMapping("/demo")
@@ -75,9 +73,11 @@ public class RequestController {
         String url = "http://localhost:9005/gateway/request/hiu/request";
 
         System.out.println(hiuPlaceRequest.hipSSID);
+        HttpHeaders headers=new HttpHeaders();
+        headers.set("swaksha-api-key", "968d36d5-05d9-4ae8-a408-a2803dfb710d");
 
         HiuRequestBody newHiuRequestBody=new HiuRequestBody(hiuPlaceRequest.hipSSID,hiuPlaceRequest.patientSSID,ssid);
-        HttpEntity<HiuRequestBody> reqEntity = new HttpEntity<>(newHiuRequestBody);
+        HttpEntity<HiuRequestBody> reqEntity = new HttpEntity<>(newHiuRequestBody,headers);
         //set API key in header .
 
         ResponseEntity<OnHiuRequestBody> ohr = this.restTemplate.postForEntity(url, reqEntity, OnHiuRequestBody.class);
@@ -86,15 +86,17 @@ public class RequestController {
     }
 
     @PostMapping("/requestWithConsent")
-    public void hiuRequestWithConsentBody(@RequestBody HiuPlaceRequestWithConsent hiuPlaceRequestWithConsent){
+    public void hiuRequestWithConsentBody(@RequestBody HiuRequestWithConsentId hiuRequestWithConsentId){
 
         // call /gateway/request/hiu/requestWithConsent
-        String url = "http://localhost:8999/gateway/request/hiu/requestWithConsent";
+        String url = "http://localhost:9005/gateway/request/hiu/requestWithConsent";
 
-        HttpEntity<HiuRequestWithConsent> reqEntity =
-                new HttpEntity<>(new HiuRequestWithConsent(hiuPlaceRequestWithConsent.docSSID, "hiussid",
-                        hiuPlaceRequestWithConsent.patientSSID,
-                        this.requestService.findConsentWithID(hiuPlaceRequestWithConsent.consentID), "URL"));
+
+        HttpHeaders headers=new HttpHeaders();
+        headers.set("swaksha-api-key", "968d36d5-05d9-4ae8-a408-a2803dfb710d");
+
+        HttpEntity<HiuRequestWithConsentId> reqEntity =
+                new HttpEntity<>(hiuRequestWithConsentId,headers);
 
         ResponseEntity<OnHiuRequestBody> ohr = this.restTemplate.postForEntity(url, reqEntity, OnHiuRequestBody.class);
     }

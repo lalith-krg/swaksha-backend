@@ -1,6 +1,8 @@
 package com.swaksha.gatewayservice.request;
 
 
+import com.google.api.Http;
+import com.swaksha.gatewayservice.auth.AuthService;
 import com.swaksha.gatewayservice.firebase.controller.NotificationController;
 import com.swaksha.gatewayservice.firebase.service.NotificationService;
 import lombok.RequiredArgsConstructor;
@@ -9,6 +11,7 @@ import org.json.JSONObject;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.cglib.core.Local;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -31,7 +34,7 @@ import java.util.Objects;
 public class RequestController {
 
     private final RequestService requestService;
-
+    private final AuthService authService;
     private RestTemplate restTemplate = new RestTemplateBuilder().build();
 
     record ConsentObj(String doctorSSID, String hiuSSID, String patientSSID, String hipSSID,
@@ -87,10 +90,24 @@ public class RequestController {
     }
 
     @PostMapping("/hiu/request")
-    public HttpEntity<OnHiuRequestBody> hiuRequest(@RequestBody HiuRequestBody hiuRequestBody){
+    public HttpEntity<OnHiuRequestBody> hiuRequest(HttpEntity<HiuRequestBody> req){
+
+        HiuRequestBody hiuRequestBody=req.getBody();
+        HttpHeaders headers =req.getHeaders();
+        System.out.println("here rn ");
+        String apiKey=headers.getFirst("swaksha-api-key");
+        System.out.println("now here rn ");
+        String hiuSsid=this.authService.getSsidFromApiKey(apiKey);
+
+        if(hiuSsid.equals("invalid api key")){
+            OnHiuRequestBody onHiuRequestBody=new OnHiuRequestBody("invalid api key",null,null);
+            HttpEntity<OnHiuRequestBody> res=new HttpEntity<>(onHiuRequestBody);
+            return res;
+        }
+
+        System.out.println(hiuSsid+" hiu ssid");
 
         System.out.println("hehe boi");
-
         // Check validity of all SSIDs
 
         System.out.println("DocSSID");
@@ -125,10 +142,7 @@ public class RequestController {
     //    boolean saved = this.requestService.saveHiuLink(hipRequestBody.consentObj.hiuSSID, hipRequestBody.dataPostUrl);
 
         //hiu ssid must be extracted from API key .
-        ConsentObj consentObj = new ConsentObj(hiuRequestBody.doctorSSID,"123456789",hiuRequestBody.patientSSID,hiuRequestBody.hipSSID,null,null,null,null,null,null,false,false);
-
-
-
+        ConsentObj consentObj = new ConsentObj(hiuRequestBody.doctorSSID,hiuSsid,hiuRequestBody.patientSSID,hiuRequestBody.hipSSID,null,null,null,null,null,null,false,false);
 
 
 
@@ -151,16 +165,30 @@ public class RequestController {
 
 
     @PostMapping("/hiu/requestWithConsent")
-    public HttpEntity<OnHiuRequestBody> hiuRequestWithConsent(@RequestBody HiuRequestWithConsentId hiuRequestWithConsentId){
-        // similar to hiuRequest
-
+    public HttpEntity<OnHiuRequestBody> hiuRequestWithConsent(HttpEntity<HiuRequestWithConsentId> req){
+        // similar to hiuReques
         // VALIDATE HIU
+        HiuRequestWithConsentId hiuRequestWithConsentId=req.getBody();
+        HttpHeaders headers =req.getHeaders();
+        System.out.println("here rn ");
+        String apiKey=headers.getFirst("swaksha-api-key");
+        System.out.println("now here rn ");
+        String hiuSsid=this.authService.getSsidFromApiKey(apiKey);
+        System.out.println("idhar hu");
+        System.out.println(hiuSsid);
+        if(hiuSsid.equals("invalid api key")){
+            OnHiuRequestBody onHiuRequestBody=new OnHiuRequestBody("invalid api key",null,null);
+            HttpEntity<OnHiuRequestBody> res=new HttpEntity<>(onHiuRequestBody);
+            return res;
+        }
 
-        String url = "http://localhost:8999/cm/consents/fetchConsentById";
+        String url = "http://localhost:9006/cm/consents/fetchConsentById";
         ResponseEntity<ConsentObj> co_entity = this.restTemplate.postForEntity(url,
                 new ConsentIdBody(hiuRequestWithConsentId.consentId), ConsentObj.class);
+        System.out.println(co_entity.getBody());
+        System.out.println(hiuRequestWithConsentId.consentId);
 
-        if(co_entity.getBody().consentID==null && !co_entity.getBody().isApproved){
+        if(co_entity.getBody().consentID==null || !co_entity.getBody().isApproved){
             return new HttpEntity<>(new OnHiuRequestBody("Invalid consent", null, null));
         }
 

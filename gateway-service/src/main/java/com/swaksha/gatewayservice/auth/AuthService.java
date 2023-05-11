@@ -14,6 +14,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.stereotype.Service;
 import com.swaksha.gatewayservice.config.JwtService;
 
+import java.awt.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -111,12 +112,19 @@ public class AuthService {
         return api_key;
     }
 
-    public boolean verifyAPIKey(String ssid, String api_key){
-        List<ApiKeys> keys = arepository.findBySsid(ssid);
-        if(keys.size() > 0 && AuthService.verifySHA256(api_key, keys.get(0).getApiKey())){
-            return true;
-        }
-        return false;
+    public String getSsidFromApiKey(String api_key){
+        List<ApiKeys> ssid = arepository.findByApiKey(generateSHA256(api_key));
+        System.out.println("encrypted api key");
+        System.out.println(generateSHA256(api_key));
+        System.out.println(api_key);
+       // System.out.println(ssid);
+//        if(keys.size() > 0 && AuthService.verifySHA256(api_key, keys.get(0).getApiKey())){
+//            return true;
+//        }
+//        return false;
+        if(ssid.size()==0)return "invalid api key";
+
+        return ssid.get(0).getSsid();
     }
 
     public static String createAPIKey(){
