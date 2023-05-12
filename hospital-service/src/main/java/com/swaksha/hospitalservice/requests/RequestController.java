@@ -226,14 +226,14 @@ public class RequestController {
     @PostMapping("/assign-notification-token")
     public Boolean assignNotificationToken(@RequestBody NToken ntoken, Authentication authentication){
         String ssid= authentication.getName();
-//        String url = "http://localhost:9005/api/v1/auth/assign-notification-token-hospital";
-//
-//        HttpHeaders headers=new HttpHeaders();
-//        headers.set("swaksha-api-key", "968d36d5-05d9-4ae8-a408-a2803dfb710d");
-//        HttpEntity<NToken2> reqEntity = new HttpEntity<>(new NToken2(ssid, ntoken.token), headers);
-//
-//        ResponseEntity<Boolean> ohr = this.restTemplate.postForEntity(url, reqEntity, Boolean.class);
-        System.out.println("fuk");
+       String url = "http://localhost:9005/api/v1/auth/assign-notification-token-hospital";
+
+       HttpHeaders headers=new HttpHeaders();
+       headers.set("swaksha-api-key", "968d36d5-05d9-4ae8-a408-a2803dfb710d");
+       HttpEntity<NToken2> reqEntity = new HttpEntity<>(new NToken2(ssid, ntoken.token), headers);
+
+       ResponseEntity<Boolean> ohr = this.restTemplate.postForEntity(url, reqEntity, Boolean.class);
+
         return true;
     }
 
