@@ -7,7 +7,7 @@ spring:
   datasource:
     url: jdbc:mysql://localhost:3306/HospitalA
     username: root
-    password: root
+    password: lalith
 
   jpa:
     hibernate:

@@ -5,6 +5,7 @@ import com.swaksha.consentmanagerservice.repository.ConsentRepo;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
@@ -60,6 +61,10 @@ public class ConsentService {
         if (!(consentObj.isApproved() == consent.isApproved()))
             return false;
 
+        if(consent.getConsentEndDate() != null && LocalDate.now().isAfter(consent.getConsentEndDate())){
+            return false;
+        }
+
         return true;
     }
 
@@ -76,7 +81,11 @@ public class ConsentService {
         }
 
         consentObj.setApproved(true);
+        consentObj.setConsentApprovedDate(LocalDate.now());
 
+        if(consentObj.getConsentEndDate() != null && LocalDate.now().isAfter(consentObj.getConsentEndDate())){
+            return blankConsent();
+        }
         // add the new consentObj to records
         boolean res = addNewConsentObj(consentObj);
 
@@ -103,6 +112,9 @@ public class ConsentService {
 
         Consent consent = consents.get(0);
 
+        if(consent.getConsentEndDate() != null && LocalDate.now().isAfter(consent.getConsentEndDate())){
+            return blankConsent();
+        }
         if(consent == null){
             return blankConsent();
         }
@@ -113,6 +125,7 @@ public class ConsentService {
         String consentId = generateConsentID();
 
         consentObj.setConsentID(consentId);
+        consentObj.setRequestInitiatedDate(LocalDate.now());
 
         return addNewConsentObj(consentObj);
     }

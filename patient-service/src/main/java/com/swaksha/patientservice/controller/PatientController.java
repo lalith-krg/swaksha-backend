@@ -31,7 +31,7 @@ public class PatientController {
     record ConsentObj(String doctorSSID, String hiuSSID, String patientSSID, String hipSSID,
                       String dataAccessStartDate, String dataAccessEndDate,
                       String requestInitiatedDate, String consentApprovedDate,
-                      LocalDate consentEndDate, String consentID, boolean selfConsent, boolean isApproved){}
+                      String consentEndDate, String consentID, boolean selfConsent, boolean isApproved){}
 
 
     record ApproveConsentBody( String encPin, ConsentObj consentObj){}
