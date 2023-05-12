@@ -94,7 +94,7 @@ public class RequestController {
 
         System.out.println(hiuPlaceRequest.hipSSID);
         HttpHeaders headers=new HttpHeaders();
-        headers.set("swaksha-api-key", "968d36d5-05d9-4ae8-a408-a2803dfb710d");
+        headers.set("swaksha-api-key", "1a6da3dd-1b83-4791-a8ba-70ccfe25aa7d");
 
         HiuRequestBody newHiuRequestBody=new HiuRequestBody(hiuPlaceRequest.hipSSID,hiuPlaceRequest.patientSSID,ssid);
         HttpEntity<HiuRequestBody> reqEntity = new HttpEntity<>(newHiuRequestBody,headers);
@@ -112,7 +112,7 @@ public class RequestController {
 
 
         HttpHeaders headers=new HttpHeaders();
-        headers.set("swaksha-api-key", "968d36d5-05d9-4ae8-a408-a2803dfb710d");
+        headers.set("swaksha-api-key", "1a6da3dd-1b83-4791-a8ba-70ccfe25aa7d");
 
         HttpEntity<HiuRequestWithConsentId> reqEntity =
                 new HttpEntity<>(hiuRequestWithConsentId,headers);

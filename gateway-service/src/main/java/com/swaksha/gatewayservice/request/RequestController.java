@@ -144,7 +144,7 @@ public class RequestController {
     //    boolean saved = this.requestService.saveHiuLink(hipRequestBody.consentObj.hiuSSID, hipRequestBody.dataPostUrl);
 
         //hiu ssid must be extracted from API key .
-        ConsentObj consentObj = new ConsentObj(hiuRequestBody.doctorSSID,hiuSsid,hiuRequestBody.patientSSID,hiuRequestBody.hipSSID,null,null,null,null,null,null,false,false);
+        ConsentObj consentObj = new ConsentObj(hiuRequestBody.doctorSSID,hiuSsid,hiuRequestBody.patientSSID, hiuRequestBody.hipSSID,null,null, null,null,null,null,false,false);
 
 
 
@@ -294,6 +294,7 @@ public class RequestController {
 
         // Check if all fields are filled and valid
         String ssid= authentication.getName();
+//        String ssid = approveConsentBody.patientSSID;
         System.out.println(ssid);
         System.out.println(approveConsentBody.consentObj.dataAccessStartDate);
         System.out.println(approveConsentBody.consentObj.dataAccessEndDate);
