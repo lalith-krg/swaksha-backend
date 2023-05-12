@@ -34,6 +34,7 @@ public class AuthController {
 
     record assignRequest(String ssid){}
     record notificationToken(String token){}
+    record notificationToken2(String token, String ssid){}
     record notificationTokenSsid(String ssid){}
 
     record PatientAuthCM (String ssid, String phoneNum, String encPin) {}
@@ -116,6 +117,12 @@ public class AuthController {
     @PostMapping("/assign-notification-token")
     public boolean assignNotificationTokenController(@RequestBody notificationToken notification_token, Authentication authentication){
         service.assignNotificationToken(authentication.getName(), notification_token.token);
+        return true;
+    }
+
+    @PostMapping("/assign-notification-token-hospital")
+    public boolean assignNotificationTokenController(@RequestBody notificationToken2 notification_token){
+        service.assignNotificationToken(notification_token.ssid, notification_token.token);
         return true;
     }
 
