@@ -157,7 +157,12 @@ public class RequestController {
         HttpEntity<ConsentObj> consentEntity = new HttpEntity<>(consentObj);
         System.out.println(consentEntity);
         ResponseEntity<Boolean> response = this.restTemplate.postForEntity(url, consentEntity, Boolean.class);
+
         // notification-to-patient-(new pending consent)-(Request placed by HIU)
+        String ssid = hiuRequestBody.patientSSID;
+        String token = authService.getNotificationToken(ssid);
+        this.notificationService.sendNotification(token, "New consent request", "By "+hiuRequestBody.hiuSSID);
+
         if (Boolean.TRUE.equals(response.getBody()))
             return new HttpEntity<OnHiuRequestBody>(new OnHiuRequestBody("Consent Request Success", consentObj.doctorSSID, consentObj.hiuSSID));
         else
