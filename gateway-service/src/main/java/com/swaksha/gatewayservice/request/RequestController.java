@@ -161,7 +161,7 @@ public class RequestController {
         // notification-to-patient-(new pending consent)-(Request placed by HIU)
         String ssid = hiuRequestBody.patientSSID;
         String token = authService.getNotificationToken(ssid);
-        this.notificationService.sendNotification(token, "New consent request", "By "+hiuRequestBody.hiuSSID);
+        this.notificationService.sendNotification(token, "New consent request", "By "+hiuSsid);
 
         if (Boolean.TRUE.equals(response.getBody()))
             return new HttpEntity<OnHiuRequestBody>(new OnHiuRequestBody("Consent Request Success", consentObj.doctorSSID, consentObj.hiuSSID));
@@ -212,10 +212,14 @@ public class RequestController {
         HttpEntity<OnHipRequestBody> hip_re = hipSendRequest(hipRequestBody);
 
         System.out.println("hello");
-        if(Objects.equals(Objects.requireNonNull(hip_re.getBody()).response, "Request Sent"))
+        if(Objects.equals(Objects.requireNonNull(hip_re.getBody()).response, "Request Sent")) {
             // notification-to-patient-(New data request placed)-(By HIU to HIP)
+            String ssid = consentObj.patientSSID;
+            String token = authService.getNotificationToken(ssid);
+            this.notificationService.sendNotification(token, "New data request", "By " + hiuSsid);
             return new HttpEntity<OnHiuRequestBody>(new OnHiuRequestBody("Consent valid. Request placed.",
                     co_entity.getBody().doctorSSID, co_entity.getBody().hiuSSID));
+        }
         else
             return new HttpEntity<OnHiuRequestBody>(new OnHiuRequestBody("Consent valid. Request failed.",
                     co_entity.getBody().doctorSSID, co_entity.getBody().hiuSSID));
@@ -327,6 +331,9 @@ public class RequestController {
         System.out.println(re.getBody().response);
         if (Objects.requireNonNull(re.getBody()).response.equals("Approved")){
             // notification-to-patient-(consent approved)-(consent {ID} approved)
+            String _ssid = approveConsentBody1.consentObj.patientSSID;
+            String token = authService.getNotificationToken(_ssid);
+            this.notificationService.sendNotification(token, "Consent approved", "ID: " + approveConsentBody1.consentObj.consentID);
             HttpEntity<ConsentObj> co_entity = new HttpEntity<>(Objects.requireNonNull(re.getBody()).consentObj);
 
             String hiuUrl = this.requestService.getHipLink(Objects.requireNonNull(co_entity.getBody()).hiuSSID) + "/hospital/requests/consentUpdate";
@@ -360,6 +367,10 @@ public class RequestController {
 
                  if(Objects.equals(Objects.requireNonNull(sr_re.getBody()), "data sent")) {
                      // notification-to-hiu-(consent approved)-(consent {ID} approved)
+                     String __ssid = approveConsentBody1.consentObj.patientSSID;
+                     String _token = authService.getNotificationToken(__ssid);
+                     this.notificationService.sendNotification(_token, "Consent approved", "ID: " + approveConsentBody1.consentObj.consentID);
+
                      return new HttpEntity<ApproveConsentResponse>(new ApproveConsentResponse("Consent Approved. Request placed."));
                  }else {
                      return  new HttpEntity<ApproveConsentResponse>(new ApproveConsentResponse("Consent Approved. Request " + "failed."));
@@ -455,7 +466,6 @@ public class RequestController {
         String url = "http://localhost:9006/cm/consents/revokeConsent";
         ResponseEntity<ConsentObj> re = this.restTemplate.postForEntity(url,
                 new HttpEntity<>(revokeConsentBody), ConsentObj.class);
-        // notification-to-patient-(Revoke consent fail/success)-{ID}
 
         HttpEntity<ConsentObj> co_entity = new HttpEntity<>(Objects.requireNonNull(re.getBody()));
 
@@ -493,7 +503,6 @@ public class RequestController {
         url = "http://localhost:9006/cm/consents/rejectConsent";
         ResponseEntity<Boolean> re = this.restTemplate.postForEntity(url,
                 new HttpEntity<>(revokeConsentBody), Boolean.class);
-        // notification-to-patient-(Reject consent success/fail)
 
         String hiuUrl = this.requestService.getHipLink(Objects.requireNonNull(co_entity.getBody()).hiuSSID) + "/hospital/requests/deleteConsent";
         ResponseEntity<Boolean> hiu_re = this.restTemplate.postForEntity(hiuUrl,
